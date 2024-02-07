@@ -29,7 +29,7 @@ int main(int argc, char** argv)
         exit(0);
     }
 
-    switch(argv[1][0])
+    switch (argv[1][0])
     {
     case 'T':
     case 't':
@@ -48,11 +48,11 @@ int main(int argc, char** argv)
 
 void testTokenizer(int argc, char** argv)
 {
-    dom::Document * document = new Document_Impl();
+    dom::Document* document = new Document_Impl();
 
-    dom::Element * element = document->createElement("NewElement");
-    dom::Text * text = document->createTextNode("Text Data");
-    dom::Attr * attr = document->createAttribute("NewAttribute");
+    dom::Element* element = document->createElement("NewElement");
+    dom::Text* text = document->createTextNode("Text Data");
+    dom::Attr* attr = document->createAttribute("NewAttribute");
 
     printf("Element Tag = '%s'\n", element->getTagName().c_str());
     printf("Text Data = '%s'\n", text->getValue().c_str());
@@ -70,7 +70,7 @@ void testTokenizer(int argc, char** argv)
     {
         XMLTokenizer tokenizer(argv[i]);
 
-        XMLTokenizer::XMLToken * token = 0;
+        XMLTokenizer::XMLToken* token = 0;
 
         printf("File:  '%s'\n", argv[i]);
 
@@ -80,7 +80,7 @@ void testTokenizer(int argc, char** argv)
             token = tokenizer.getNextToken();
 
             printf("\tLine %d:  %s = '%s'\n", tokenizer.getLineNumber(),
-              token->toString(), token->getToken().size() == 0 ? "" : token->getToken().c_str());
+                token->toString(), token->getToken().size() == 0 ? "" : token->getToken().c_str());
 
         } while (token->getTokenType() != XMLTokenizer::XMLToken::NULL_TOKEN);
 
@@ -109,12 +109,12 @@ void testSerializer(int argc, char** argv)
     //   </element>
     // </document>
     //
-    dom::Document * document = new Document_Impl();
-    dom::Element * root = document->createElement("document");
+    dom::Document* document = new Document_Impl();
+    dom::Element* root = document->createElement("document");
     document->appendChild(root);
 
-    dom::Element * child = document->createElement("element");
-    dom::Attr * attr = document->createAttribute("attribute");
+    dom::Element* child = document->createElement("element");
+    dom::Attr* attr = document->createAttribute("attribute");
     attr->setValue("attribute value");
     child->setAttributeNode(attr);
     root->appendChild(child);
@@ -125,7 +125,7 @@ void testSerializer(int argc, char** argv)
     child = document->createElement("element");
     child->setAttribute("attribute", "attribute value");
     child->setAttribute("attribute2", "attribute2 value");
-    dom::Text * text = document->createTextNode("Element Value");
+    dom::Text* text = document->createTextNode("Element Value");
     child->appendChild(text);
     root->appendChild(child);
 
@@ -182,7 +182,7 @@ void testValidator(int argc, char** argv)
     // element contains attributes:  attribute, attribute2
     //
     XMLValidator xmlValidator;
-    ValidChildren * schemaElement = xmlValidator.addSchemaElement("");
+    ValidChildren* schemaElement = xmlValidator.addSchemaElement("");
     schemaElement->addValidChild("document", false);
     schemaElement = xmlValidator.addSchemaElement("document");
     schemaElement->addValidChild("element", false);
@@ -192,10 +192,10 @@ void testValidator(int argc, char** argv)
     schemaElement->addValidChild("attribute2", true);
     schemaElement->setCanHaveText(true);
 
-    dom::Document * document = new Document_Impl;
-    dom::Element * root = 0;
-    dom::Element * child = 0;
-    dom::Attr * attr = 0;
+    dom::Document* document = new Document_Impl;
+    dom::Element* root = 0;
+    dom::Element* child = 0;
+    dom::Attr* attr = 0;
 
     if (xmlValidator.canRootElement("document"))
     {
@@ -265,7 +265,7 @@ void testValidator(int argc, char** argv)
 
         if (xmlValidator.canAddText(child))
         {
-            dom::Text * text = document->createTextNode("Element Value");
+            dom::Text* text = document->createTextNode("Element Value");
             child->appendChild(text);
         }
         else

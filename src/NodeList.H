@@ -5,22 +5,22 @@
 
 namespace dom
 {
-	class Node;
+    class Node;
 
-	class NodeList : public std::list<Node *>
-	{
-	public:
-		virtual iterator	find(Node *n)
-		{
-			iterator	i;
+    class NodeList : public std::list<Node*>
+    {
+    public:
+        virtual iterator    find(Node* n)
+        {
+            iterator    i;
 
-			for (i = begin(); i != end(); i++)
-				if (*i.operator->() == n)
-					break;
+            for (i = begin(); i != end(); i++)
+                if (*i.operator->() == n)
+                    break;
 
-			return i;
-		}
-	};
+            return i;
+        }
+    };
 };
 
 #endif // NODELIST_H

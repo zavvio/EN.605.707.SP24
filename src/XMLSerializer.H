@@ -4,6 +4,7 @@
 
 #include "Node.H"
 
+// [Strategy pattern] Context
 class XMLSerializer
 {
 private:

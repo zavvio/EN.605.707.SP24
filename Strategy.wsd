@@ -21,31 +21,31 @@ interface Strategy.Node {
     ...()
 }
 
-class ConcreteStrategy.Document {
+class ConcreteStrategy.Document_Impl {
     +serializeMinimal(ostream* os, int indentationLevel)
     +serializePretty(ostream* os, int indentationLevel)
 }
 
-class ConcreteStrategy.Attr {
+class ConcreteStrategy.Attr_Impl {
     +serializeMinimal(ostream* os, int indentationLevel)
     +serializePretty(ostream* os, int indentationLevel)
 }
 
-class ConcreteStrategy.Element {
+class ConcreteStrategy.Element_Impl {
     +serializeMinimal(ostream* os, int indentationLevel)
     +serializePretty(ostream* os, int indentationLevel)
 }
 
-class ConcreteStrategy.Text {
+class ConcreteStrategy.Text_Impl {
     +serializeMinimal(ostream* os, int indentationLevel)
     +serializePretty(ostream* os, int indentationLevel)
 }
 
 Strategy.Node <-right- Context.XMLSerializer
-Strategy.Node <|-down- ConcreteStrategy.Document
-Strategy.Node <|-down- ConcreteStrategy.Attr
-Strategy.Node <|-down- ConcreteStrategy.Element
-Strategy.Node <|-down- ConcreteStrategy.Text
+Strategy.Node <|-down- ConcreteStrategy.Document_Impl
+Strategy.Node <|-down- ConcreteStrategy.Attr_Impl
+Strategy.Node <|-down- ConcreteStrategy.Element_Impl
+Strategy.Node <|-down- ConcreteStrategy.Text_Impl
 
 interface Strategy2.ostream {
     +operator<<(...)

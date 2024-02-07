@@ -30,6 +30,7 @@ namespace dom
     };
 };
 
+// [Factory Method pattern] ConcreteProduct
 // [Factory Method] ConcreteProduct
 class Text_Impl : public virtual dom::Text, Node_Impl
 {

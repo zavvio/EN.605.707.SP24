@@ -23,6 +23,8 @@ namespace dom
     };
 };
 
+// [Factory Method pattern] ConcreteProduct
+// [Strategy pattern] ConcreteStrategy
 class Attr_Impl : public virtual dom::Attr, Node_Impl
 {
 protected:

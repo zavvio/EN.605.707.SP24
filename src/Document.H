@@ -7,26 +7,27 @@
 
 namespace dom
 {
-    class Element;  // [Factory Method] Product
-    class Text;     // [Factory Method] Product
-    class Attr;     // [Factory Method] Product
+    class Element;  // [Factory Method pattern] Product
+    class Text;     // [Factory Method pattern] Product
+    class Attr;     // [Factory Method pattern] Product
     class NodeList;
 
-    // [Factory Method] Creator
+    // [Factory Method pattern] Creator
     class Document : public virtual Node
     {
     public:
-        // [Factory Method] FactoryMethod
+        // [Factory Method pattern] FactoryMethod
         virtual Element *   createElement(const std::string & tagName)  = 0;
-        // [Factory Method] FactoryMethod
+        // [Factory Method pattern] FactoryMethod
         virtual Text *      createTextNode(const std::string & data)    = 0;
-        // [Factory Method] FactoryMethod
+        // [Factory Method pattern] FactoryMethod
         virtual Attr *      createAttribute(const std::string & name)   = 0;
         virtual Element *   getDocumentElement()                        = 0;
     };
 };
 
-// [Factory Method] ConcreteCreator
+// [Factory Method pattern] ConcreteCreator
+// [Strategy pattern] ConcreteStrategy
 class Document_Impl : public virtual dom::Document, public virtual Node_Impl
 {
 public:

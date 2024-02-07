@@ -9,6 +9,7 @@ namespace dom
 {
     class Document;
 
+    // [Strategy pattern] Strategy
     class Node
     {
     public:

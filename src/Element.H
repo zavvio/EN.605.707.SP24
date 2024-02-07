@@ -33,6 +33,8 @@ namespace dom
     };
 };
 
+// [Factory Method pattern] ConcreteProduct
+// [Strategy pattern] ConcreteStrategy
 class Element_Impl : public virtual dom::Element, Node_Impl
 {
 private:

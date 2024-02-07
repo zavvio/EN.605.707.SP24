@@ -26,7 +26,7 @@ namespace dom
         virtual void            insertData(int offset, const std::string & arg)            = 0;
         virtual void            deleteData(int offset, int count)                = 0;
         virtual void            replaceData(int offset, int count, const std::string & arg)    = 0;
-        virtual Text *            splitText(int offset)                        = 0;
+        virtual Text * splitText(int offset) = 0;
     };
 };
 
@@ -51,7 +51,9 @@ public:
     virtual void            insertData(int offset, const std::string & arg);
     virtual void            deleteData(int offset, int count);
     virtual void            replaceData(int offset, int count, const std::string & arg);
-    virtual dom::Text *        splitText(int offset);
+    virtual dom::Text * splitText(int offset);
+    virtual void serializeMinimal(std::ostream* os, int indentationLevel = 0);
+    virtual void serializePretty(std::ostream* os, int indentationLevel = 0);
 };
 
 #endif // TEXT_H

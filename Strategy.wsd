@@ -1,0 +1,70 @@
+@startuml FactoryMethod
+'skinparam linetype ortho
+skinparam linetype polyline
+
+class Context.XMLSerializer {
+    -Node* _node
+    -ostream* _os
+    +XMLSerializer(Node*, ostream*)
+    +setNode(Node*)
+    +setStream(ostream*)
+    +serializeMinimal() -> aNode.serializeMinimal(_os)
+    +serializePretty() -> aNode.serializePretty(_os)
+}
+
+interface Strategy.Node {
+    ' -int indentationLevel
+    ' ...
+    #prettyIndentation(ostream* os, int indentationLevel)
+    +serializeMinimal(ostream* os, int indentationLevel)
+    +serializePretty(ostream* os, int indentationLevel)
+    ...()
+}
+
+class ConcreteStrategy.Document {
+    +serializeMinimal(ostream* os, int indentationLevel)
+    +serializePretty(ostream* os, int indentationLevel)
+}
+
+class ConcreteStrategy.Attr {
+    +serializeMinimal(ostream* os, int indentationLevel)
+    +serializePretty(ostream* os, int indentationLevel)
+}
+
+class ConcreteStrategy.Element {
+    +serializeMinimal(ostream* os, int indentationLevel)
+    +serializePretty(ostream* os, int indentationLevel)
+}
+
+class ConcreteStrategy.Text {
+    +serializeMinimal(ostream* os, int indentationLevel)
+    +serializePretty(ostream* os, int indentationLevel)
+}
+
+Strategy.Node <-right- Context.XMLSerializer
+Strategy.Node <|-down- ConcreteStrategy.Document
+Strategy.Node <|-down- ConcreteStrategy.Attr
+Strategy.Node <|-down- ConcreteStrategy.Element
+Strategy.Node <|-down- ConcreteStrategy.Text
+
+interface Strategy2.ostream {
+    +operator<<(...)
+}
+
+class ConcreteStrategy2.ofstream {
+    +operator<<(...)
+}
+
+class ConcreteStrategy2.ostringstream {
+    +operator<<(...)
+}
+
+class ConcreteStrategy2.iostream {
+    +operator<<(...)
+}
+
+Strategy2.ostream <-right- Context.XMLSerializer
+Strategy2.ostream <|-down- ConcreteStrategy2.ofstream
+Strategy2.ostream <|-down- ConcreteStrategy2.ostringstream
+Strategy2.ostream <|-down- ConcreteStrategy2.iostream
+@enduml

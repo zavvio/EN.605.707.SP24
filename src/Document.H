@@ -34,10 +34,12 @@ public:
 
     virtual ~Document_Impl();
 
-    virtual dom::Element *    createElement(const std::string & tagName);
+    virtual dom::Element * createElement(const std::string & tagName);
     virtual dom::Text *    createTextNode(const std::string & data);
     virtual dom::Attr *    createAttribute(const std::string & name);
-    virtual dom::Element *    getDocumentElement();
+    virtual dom::Element * getDocumentElement();
+    virtual void serializeMinimal(std::ostream* os, int indentationLevel = 0);
+    virtual void serializePretty(std::ostream* os, int indentationLevel = 0);
 };
 
 #endif // DOCUMENT_H

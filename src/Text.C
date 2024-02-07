@@ -87,7 +87,7 @@ void			Text_Impl::replaceData(int offset, int count, const std::string & arg)
 	setValue(value.erase(offset, count).insert(offset, arg));
 }
 
-dom::Text *		Text_Impl::splitText(int offset)
+dom::Text * Text_Impl::splitText(int offset)
 {
 	try
 	{
@@ -104,4 +104,16 @@ dom::Text *		Text_Impl::splitText(int offset)
 	{
 		throw dom::DOMException(dom::DOMException::INDEX_SIZE_ERR, "Index larget than Text node's value.");
 	}
+}
+
+void Text_Impl::serializeMinimal(std::ostream* os, int indentationLevel)
+{
+	(*os) << this->getData();
+}
+
+void Text_Impl::serializePretty(std::ostream* os, int indentationLevel)
+{
+	prettyIndentation(os, indentationLevel);
+	(*os) << this->getData();
+	(*os) << "\n";
 }

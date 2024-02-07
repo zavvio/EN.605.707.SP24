@@ -25,7 +25,7 @@ namespace dom
         virtual bool            hasAttribute(const std::string & name)                    = 0;
         virtual void            removeAttribute(const std::string & name)                = 0;
         virtual Attr *            removeAttributeNode(Attr * oldAttr)                    = 0;
-        virtual void            setAttribute(const std::string & name, const std::string & value)    = 0;
+        virtual void setAttribute(const std::string & name, const std::string & value)    = 0;
         virtual Attr *            setAttributeNode(Attr * newAttr)                    = 0;
 
         virtual dom::NamedNodeMap *    getAttributes(void)                            = 0;
@@ -56,6 +56,9 @@ public:
 
     virtual dom::NamedNodeMap *    getAttributes(void)    { return &attributes; }
     virtual bool            hasAttributes(void)    { return attributes.size() > 0; }
+
+    virtual void serializeMinimal(std::ostream* os, int indentationLevel = 0);
+    virtual void serializePretty(std::ostream* os, int indentationLevel = 0);
 };
 
 #endif // ELEMENT_H

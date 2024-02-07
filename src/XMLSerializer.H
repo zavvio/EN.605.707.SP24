@@ -1,20 +1,21 @@
+#pragma once
 #include <string>
-#include <fstream>
-#include <ios>
+#include <iostream>
 
 #include "Node.H"
 
 class XMLSerializer
 {
 private:
-	std::fstream		file;
-	int			indentationLevel;
+    dom::Node* _node;
+    std::ostream* _os;
 
-	virtual void		prettyIndentation();
 public:
-	XMLSerializer(const std::string & filename) : indentationLevel(0), file(filename.c_str(), std::ios_base::out)	{}
-	~XMLSerializer() {}
+    XMLSerializer(dom::Node* node, std::ostream* os = &std::cout) : _node(node), _os(os) {}
+    ~XMLSerializer() {}
 
-	virtual void		serializePretty(dom::Node * node);
-	virtual void		serializeMinimal(dom::Node * node);
+    virtual void setNode(dom::Node* node) { _node = node; }
+    virtual void setStream(std::ostream* os) { _os = os; }
+    virtual void serializeMinimal();
+    virtual void serializePretty();
 };

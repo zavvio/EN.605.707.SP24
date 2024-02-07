@@ -38,6 +38,8 @@ public:
     virtual const std::string &    getValue(void);
     virtual void            setValue(const std::string & value);
     virtual dom::Element *        getOwnerElement(void);
+    virtual void serializeMinimal(std::ostream* os, int indentationLevel = 0);
+    virtual void serializePretty(std::ostream* os, int indentationLevel = 0);
 };
 
 #endif // ATTR_H

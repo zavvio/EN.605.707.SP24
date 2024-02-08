@@ -25,6 +25,7 @@ namespace dom
         virtual void setNodeValue(const std::string& nodeValue) = 0;
         virtual short getNodeType(void) = 0;
         virtual Node* getParentNode(void) = 0;
+        virtual void setParent(dom::Node* parent) = 0;
         virtual NodeList* getChildNodes(void) = 0;
         virtual Node* getFirstChild(void) = 0;
         virtual Node* getLastChild(void) = 0;
@@ -35,7 +36,7 @@ namespace dom
         virtual Node* replaceChild(Node* newChild, Node* oldChild) = 0;
         virtual Node* removeChild(Node* oldChild) = 0;
         virtual Node* appendChild(Node* newChild) = 0;
-        virtual bool            hasChildNodes(void) = 0;
+        virtual bool hasChildNodes(void) = 0;
         virtual const std::string& getLocalName(void) = 0;
         virtual void prettyIndentation(std::ostream* os, int indentationLevel = 0) = 0;
         virtual void serializeMinimal(std::ostream* os, int indentationLevel = 0) = 0;
@@ -78,11 +79,12 @@ private:
 protected:
     dom::Document* document;
 
-    Node_Impl(const std::string& name, short type);
 public:
+    Node_Impl(const std::string& name, short type);
     virtual ~Node_Impl();
 
     virtual const std::string& getNodeName(void);
+    virtual void setNodeName(const std::string& nodeName);
     virtual const std::string& getNodeValue(void);
     virtual void setNodeValue(const std::string& nodeValue);
     virtual short getNodeType(void);
@@ -100,6 +102,8 @@ public:
     virtual bool hasChildNodes(void);
     virtual const std::string& getLocalName(void);
     virtual void prettyIndentation(std::ostream* os, int indentationLevel = 0);
+    virtual void serializeMinimal(std::ostream* os, int indentationLevel = 0);
+    virtual void serializePretty(std::ostream* os, int indentationLevel = 0);
 
     virtual void setParent(dom::Node* parent);
 };

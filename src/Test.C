@@ -1,10 +1,12 @@
 #include <iostream>
 #include <sstream>
 #include <stdio.h>
+#include "Node.H"
 #include "Attr.H"
 #include "Document.H"
 #include "Element.H"
 #include "Text.H"
+#include "NodeDecorator.H"
 #include "XMLTokenizer.H"
 #include "XMLSerializer.H"
 #include "XMLValidator.H"
@@ -12,6 +14,7 @@
 void testTokenizer(int argc, char** argv);
 void testSerializer(int argc, char** argv);
 void testValidator(int argc, char** argv);
+void testDecorator(int argc, char** argv);
 
 void printUsage(void)
 {
@@ -19,6 +22,7 @@ void printUsage(void)
     printf("\tTest t [file] ...\n");
     printf("\tTest s [file1] [file2]\n");
     printf("\tTest v [file]\n");
+    printf("\tTest d [file]\n");
 }
 
 int main(int argc, char** argv)
@@ -42,6 +46,10 @@ int main(int argc, char** argv)
     case 'V':
     case 'v':
         testValidator(argc, argv);
+        break;
+    case 'D':
+    case 'd':
+        testDecorator(argc, argv);
         break;
     }
 }
@@ -301,4 +309,46 @@ void testValidator(int argc, char** argv)
     xmlSerializer.serializePretty();
 
     // delete Document and tree.
+}
+
+void testDecorator(int argc, char** argv)
+{
+    if (argc < 3)
+    {
+        printUsage();
+        exit(0);
+    }
+    dom::Document* document = new Document_Impl();
+    CanAddElementDocument* rootDocument = new CanAddElementDocument(new CanAddTextDocument(document, false), std::set<std::string>({ "document" }));
+    dom::Element* invalidElement = document->createElement("invalidElementName");
+    printf("Attempt to add invalid Element to Document...\n");
+    rootDocument->appendChild(invalidElement);
+
+    CanAddElementElement* documentElement = document->createValidatedElement("document", std::set<std::string>({ "element" }), std::set<std::string>({}), false);
+    rootDocument->appendChild(documentElement);
+    printf("Attempt to insert invalid Element to Element...\n");
+    documentElement->appendChild(invalidElement);
+    documentElement->appendChild(document->createElement("element"));
+
+    dom::Text* text = document->createTextNode("Hello World");
+    printf("Attempt to add Text to Element which does not allow it...\n");
+    documentElement->appendChild(text);
+    printf("Attempt to add invalid Attribute to Element...\n");
+    documentElement->setAttribute("invalidAttribute", "invalidAttributeValue");
+    dom::Attr* invalidAttr = document->createAttribute("invalidAttribute2");
+    invalidAttr->setValue("invalid attribute2 value");
+    printf("Attempt to add invalid Attribute Node to Element...\n");
+    documentElement->setAttributeNode(invalidAttr);
+
+    CanAddElementElement* canTextAttrElement = document->createValidatedElement("element", std::set<std::string>({}), std::set<std::string>({ "attribute", "attribute2" }), true);
+    canTextAttrElement->appendChild(text);
+    canTextAttrElement->setAttribute("attribute", "valid attribute value");
+    dom::Attr* attr = document->createAttribute("attribute2");
+    attr->setValue("valid attribute2 value");
+    canTextAttrElement->setAttributeNode(attr);
+    documentElement->appendChild(canTextAttrElement);
+
+    printf("\n===== Serializing =====\n");
+    XMLSerializer xmlSerializer(documentElement);
+    xmlSerializer.serializePretty();
 }

@@ -41,7 +41,7 @@ dom::Node* NamedNodeMap_Impl::setNamedItem(dom::Node* arg)
             break;
 
     if (i != end())
-        erase(i);
+        erase(i); // TODO: This removes the item without releasing memory!!
 
     push_back(arg);
 
@@ -52,7 +52,7 @@ dom::Node* NamedNodeMap_Impl::removeNamedItem(const std::string& name)
 {
     for (iterator i = begin(); i != end(); i++)
         if ((*i.operator->())->getNodeName().compare(name) == 0)
-            return *i.operator->();
+            return *i.operator->(); // TODO: This currently doesn't actually remove the item!!
 
     throw dom::DOMException(dom::DOMException::NOT_FOUND_ERR, "Node not found.");
 }

@@ -114,6 +114,7 @@ void Element_Impl::setAttribute(const std::string& name, const std::string& valu
     }
 
     dom::Attr* attribute;
+    // TODO: this should have used NamedNodeMap_Impl.setNamedItem(...) function!
     attributes.push_back(attribute = new Attr_Impl(name, value, dynamic_cast<Document_Impl*>(getOwnerDocument())));
     dynamic_cast<Node_Impl*>(dynamic_cast<Node*>(attribute))->setParent(this);
 }
@@ -138,7 +139,7 @@ dom::Attr* Element_Impl::setAttributeNode(dom::Attr* newAttr)
 
     dynamic_cast<Node_Impl*>(dynamic_cast<Node*>(newAttr))->setParent(this);
     attributes.push_back(newAttr);
-    return oldAttribute;
+    return oldAttribute; // TODO: nobody is handling this returned Node!!
 }
 
 void Element_Impl::serializeMinimal(std::ostream* os, int indentationLevel)
@@ -198,7 +199,7 @@ void Element_Impl::serializePretty(std::ostream* os, int indentationLevel)
         for (dom::NodeList::iterator i = this->getChildNodes()->begin();
             i != this->getChildNodes()->end();
             i++)
-            if (dynamic_cast<dom::Element*>(*i) != 0 || dynamic_cast<dom::Text*>(*i) != 0)
+            if ((*i)->getNodeType() == ELEMENT_NODE || (*i)->getNodeType() == TEXT_NODE)
                 (*i)->serializePretty(os, indentationLevel);
 
         indentationLevel--;

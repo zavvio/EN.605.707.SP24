@@ -1,4 +1,4 @@
-@startuml FactoryMethod
+@startuml Strategy
 'skinparam linetype ortho
 skinparam linetype polyline
 

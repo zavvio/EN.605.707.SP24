@@ -10,10 +10,14 @@ target_sources(Patterns PUBLIC
 	Document.H
 	Element.C
 	Element.H
+	ElementDecorator.C
+	ElementDecorator.H
 	NamedNodeMap.C
 	NamedNodeMap.H
 	Node.C
 	Node.H
+	NodeDecorator.C
+	NodeDecorator.H
 	NodeList.H
 	Test.C
 	Text.C

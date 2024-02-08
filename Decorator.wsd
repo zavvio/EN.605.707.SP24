@@ -1,0 +1,65 @@
+@startuml Decorator
+skinparam linetype ortho
+'skinparam linetype polyline
+
+class Component.Node {
+    +appendChild(Node* newChild)
+}
+
+class Component.Element {
+    +setAttribute(string& name, string& value)
+    +setAttributeNode(Attr* newAttr)
+}
+
+class ConcreteComponent.Document_Impl {
+    +appendChild(Node* newChild)
+}
+
+class ConcreteComponent.Element_Impl {
+    +appendChild(Node* newChild)
+    +setAttribute(string& name, string& value)
+    +setAttributeNode(Attr* newAttr)
+}
+
+class Decorator.ElementDecorator {
+    -Element* component
+    +setAttribute(string& name, string& value)
+    +setAttributeNode(Attr* newAttr)
+}
+
+class Decorator.NodeDecorator {
+    -Node* component
+    +appendChild(Node* newChild)
+}
+
+class ConcreteDecorator.canAddAttributeCheck {
+    -set<string> validAttributeNames
+    +setAttribute(string& name, string& value)
+    +setAttributeNode(Attr* newAttr)
+    +canAddAttribute(string name)
+}
+
+class ConcreteDecorator.canAddElementCheck {
+    -set<string> validElementNames
+    +appendChild(Node* newChild)
+    +canAddElement(string name)
+}
+
+class ConcreteDecorator.canAddTextCheck {
+    -bool isAllowed
+    +appendChild(Node* newChild)
+    +canAddText()
+}
+
+Component.Node <|-down- Component.Element
+Component.Node <|-down- ConcreteComponent.Document_Impl
+Component.Element <|-down- ConcreteComponent.Element_Impl
+Component.Element <|-down- Decorator.ElementDecorator
+Component.Element <-down-o Decorator.ElementDecorator : component
+Component.Node <|-down- Decorator.NodeDecorator
+Component.Node <-down-o Decorator.NodeDecorator : component
+Decorator.ElementDecorator <|-down- ConcreteDecorator.canAddAttributeCheck
+Decorator.NodeDecorator <|-down- ConcreteDecorator.canAddElementCheck
+Decorator.NodeDecorator <|-down- ConcreteDecorator.canAddTextCheck
+
+@enduml

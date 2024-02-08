@@ -13,6 +13,11 @@ const std::string& Node_Impl::getNodeName(void)
     return name;
 }
 
+void Node_Impl::setNodeName(const std::string& nodeName)
+{
+    name = nodeName;
+}
+
 const std::string& Node_Impl::getNodeValue(void)
 {
     return value;
@@ -132,7 +137,8 @@ dom::Node* Node_Impl::appendChild(dom::Node* newChild)
         newChild->getParentNode()->removeChild(newChild);
 
     nodes.push_back(newChild);
-    (dynamic_cast<Node_Impl*>(newChild))->setParent(this);
+    (dynamic_cast<Node*>(newChild))->setParent(this);
+    //printf("parent = %s, node = %s, nodes.size = %lu\n", newChild->getParentNode()->getNodeName().c_str(), newChild->getNodeName().c_str(), (unsigned long) nodes.size());
 
     return newChild;
 }
@@ -151,6 +157,14 @@ void Node_Impl::prettyIndentation(std::ostream* os, int indentationLevel)
 {
     for (int i = 0; i < indentationLevel; i++)
         (*os) << "\t";
+}
+
+void Node_Impl::serializeMinimal(std::ostream* os, int indentationLevel)
+{
+}
+
+void Node_Impl::serializePretty(std::ostream* os, int indentationLevel)
+{
 }
 
 void Node_Impl::setParent(dom::Node* parent)

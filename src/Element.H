@@ -22,14 +22,14 @@ namespace dom
         virtual Attr* getAttributeNode(const std::string& name) = 0;
         virtual NodeList* getElementsByTagName(const std::string& tagName) = 0;
         virtual const std::string& getTagName(void) = 0;
-        virtual bool            hasAttribute(const std::string& name) = 0;
-        virtual void            removeAttribute(const std::string& name) = 0;
+        virtual bool hasAttribute(const std::string& name) = 0;
+        virtual void removeAttribute(const std::string& name) = 0;
         virtual Attr* removeAttributeNode(Attr* oldAttr) = 0;
         virtual void setAttribute(const std::string& name, const std::string& value) = 0;
         virtual Attr* setAttributeNode(Attr* newAttr) = 0;
 
         virtual dom::NamedNodeMap* getAttributes(void) = 0;
-        virtual bool            hasAttributes(void) = 0;
+        virtual bool hasAttributes(void) = 0;
     };
 };
 
@@ -38,7 +38,7 @@ namespace dom
 class Element_Impl : public virtual dom::Element, Node_Impl
 {
 private:
-    NamedNodeMap_Impl    attributes;
+    NamedNodeMap_Impl attributes;
 protected:
     Element_Impl(const std::string& tagName, dom::Document* document);
 public:

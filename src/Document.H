@@ -4,6 +4,8 @@
 #include <string>
 
 #include "Node.H"
+#include "NodeDecorator.H"
+#include "ElementDecorator.H"
 
 namespace dom
 {
@@ -18,11 +20,12 @@ namespace dom
     public:
         // [Factory Method pattern] FactoryMethod
         virtual Element* createElement(const std::string& tagName) = 0;
+        virtual CanAddElementElement* createValidatedElement(const std::string& tagName, std::set<std::string> validElementNames, std::set<std::string> validAttributeNames, bool isTextAllowed) = 0;
         // [Factory Method pattern] FactoryMethod
         virtual Text* createTextNode(const std::string& data) = 0;
         // [Factory Method pattern] FactoryMethod
         virtual Attr* createAttribute(const std::string& name) = 0;
-        virtual Element* getDocumentElement() = 0;
+        virtual Node* getDocumentElement() = 0;
     };
 };
 
@@ -36,9 +39,10 @@ public:
     virtual ~Document_Impl();
 
     virtual dom::Element* createElement(const std::string& tagName);
+    virtual CanAddElementElement* createValidatedElement(const std::string& tagName, std::set<std::string> validElementNames, std::set<std::string> validAttributeNames, bool isTextAllowed);
     virtual dom::Text* createTextNode(const std::string& data);
     virtual dom::Attr* createAttribute(const std::string& name);
-    virtual dom::Element* getDocumentElement();
+    virtual dom::Node* getDocumentElement();
     virtual void serializeMinimal(std::ostream* os, int indentationLevel = 0);
     virtual void serializePretty(std::ostream* os, int indentationLevel = 0);
 };

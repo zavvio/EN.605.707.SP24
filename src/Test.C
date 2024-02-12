@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <fstream>
+#include <ios>
 #include "Attr.H"
 #include "Document.H"
 #include "Element.H"
@@ -133,10 +135,13 @@ void testSerializer(int argc, char** argv)
 	//
 	// Serialize
 	//
-	XMLSerializer	xmlSerializer(argv[2]);
+	std::fstream *	file	= 0;
+	XMLSerializer	xmlSerializer(file = new std::fstream(argv[2], std::ios_base::out));
 	xmlSerializer.serializePretty(document);
-	XMLSerializer	xmlSerializer2(argv[3]);
+	delete file;
+	XMLSerializer	xmlSerializer2(file = new std::fstream(argv[3], std::ios_base::out));
 	xmlSerializer2.serializeMinimal(document);
+	delete file;
 
 	// delete Document and tree.
 }
@@ -178,112 +183,36 @@ void testValidator(int argc, char** argv)
 	schemaElement->addValidChild("attribute2", true);
 	schemaElement->setCanHaveText(true);
 
-	dom::Document *	document	= new Document_Impl;
+	dom::Document *	document	= new DocumentValidator(new Document_Impl, &xmlValidator);
 	dom::Element *	root		= 0;
 	dom::Element *	child		= 0;
 	dom::Attr *	attr		= 0;
 
-	if (xmlValidator.canRootElement("document"))
-	{
-		root		= document->createElement("document");
-		document->appendChild(root);
-	}
-	else
-	{
-		printf("Attempted invalid schema operation.");
-		exit(0);
-	}
-
-	if (xmlValidator.canAddElement(root, "element"))
-	{
-		child		= document->createElement("element");
-
-		if (xmlValidator.canAddAttribute(child, "attribute"))
-		{
-			attr		= document->createAttribute("attribute");
-			attr->setValue("attribute value");
-			child->setAttributeNode(attr);
-		}
-		else
-		{
-			printf("Attempted invalid schema operation.");
-			exit(0);
-		}
-
-		root->appendChild(child);
-	}
-	else
-	{
-		printf("Attempted invalid schema operation.");
-		exit(0);
-	}
-
-	if (xmlValidator.canAddElement(root, "element"))
-	{
-		child			= document->createElement("element");
-		root->appendChild(child);
-	}
-	else
-	{
-		printf("Attempted invalid schema operation.");
-		exit(0);
-	}
-
-	if (xmlValidator.canAddElement(root, "element"))
-	{
-		child			= document->createElement("element");
-
-		if (xmlValidator.canAddAttribute(child, "attribute"))
-			child->setAttribute("attribute", "attribute value");
-		else
-		{
-			printf("Attempted invalid schema operation.");
-			exit(0);
-		}
-
-		if (xmlValidator.canAddAttribute(child, "attribute2"))
-			child->setAttribute("attribute2", "attribute2 value");
-		else
-		{
-			printf("Attempted invalid schema operation.");
-			exit(0);
-		}
-
-		if (xmlValidator.canAddText(child))
-		{
-			dom::Text *	text		= document->createTextNode("Element Value");
-			child->appendChild(text);
-		}
-		else
-		{
-			printf("Attempted invalid schema operation.");
-			exit(0);
-		}
-
-		root->appendChild(child);
-	}
-	else
-	{
-		printf("Attempted invalid schema operation.");
-		exit(0);
-	}
-
-	if (xmlValidator.canAddElement(root, "element"))
-	{
-		child			= document->createElement("element");
-		root->appendChild(child);
-	}
-	else
-	{
-		printf("Attempted invalid schema operation.");
-		exit(0);
-	}
+	root		= new ElementValidator(document->createElement("document"), &xmlValidator);
+	document->appendChild(root);
+	child		= new ElementValidator(document->createElement("element"), &xmlValidator);
+	attr		= document->createAttribute("attribute");
+	attr->setValue("attribute value");
+	child->setAttributeNode(attr);
+	root->appendChild(child);
+	child		= new ElementValidator(document->createElement("element"), &xmlValidator);
+	root->appendChild(child);
+	child		= new ElementValidator(document->createElement("element"), &xmlValidator);
+	child->setAttribute("attribute", "attribute value");
+	child->setAttribute("attribute2", "attribute2 value");
+	dom::Text *	text		= document->createTextNode("Element Value");
+	child->appendChild(text);
+	root->appendChild(child);
+	child		= new ElementValidator(document->createElement("element"), &xmlValidator);
+	root->appendChild(child);
 
 	//
 	// Serialize
 	//
-	XMLSerializer	xmlSerializer(argv[2]);
+	std::fstream *	file	= 0;
+	XMLSerializer	xmlSerializer(file = new std::fstream(argv[2], std::ios_base::out));
 	xmlSerializer.serializePretty(document);
+	delete file;
 
 	// delete Document and tree.
 }

@@ -28,7 +28,7 @@ namespace dom
 	};
 };
 
-class Attr_Impl : public virtual dom::Attr, Node_Impl
+class Attr_Impl : public virtual dom::Attr, public virtual Leaf_Impl
 {
 protected:
 	Attr_Impl(const std::string & tagName, dom::Document * document);

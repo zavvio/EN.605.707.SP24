@@ -1,12 +1,15 @@
 #include "Attr.H"
 
-Attr_Impl::Attr_Impl(const std::string & tagName, dom::Document * document) : Node_Impl(tagName, dom::Node::ATTRIBUTE_NODE)
+Attr_Impl::Attr_Impl(const std::string & tagName, dom::Document * document) :
+	Node_Impl(tagName, dom::Node::ATTRIBUTE_NODE),
+	Leaf_Impl(tagName, dom::Node::ATTRIBUTE_NODE)
 {
 	Node_Impl::document	= document;
 }
 
 Attr_Impl::Attr_Impl(const std::string & tagName, const std::string & value, dom::Document * document) :
-  Node_Impl(tagName, dom::Node::ATTRIBUTE_NODE)
+	Node_Impl(tagName, dom::Node::ATTRIBUTE_NODE),
+	Leaf_Impl(tagName, dom::Node::ATTRIBUTE_NODE)
 {
 	Node_Impl::document	= document;
 	setValue(value);

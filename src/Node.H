@@ -73,41 +73,71 @@ private:
 	std::string	name;
 	std::string	value;
 	short		nodeType;
-	dom::Node *	parent;
-	dom::NodeList	nodes;
+	dom::Node* parent;
 
-	dom::Node *			getSibling(int direction);
+	dom::Node* getSibling(int direction);
 protected:
-	dom::Document *	document;
+	dom::Document* document;
 
-	Node_Impl(const std::string & name, short type);
+	Node_Impl(const std::string& name, short type);
 public:
 	virtual ~Node_Impl();
 
 	//
 	// Serialization Data Extraction Strategy
 	//
-	virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace)	{}
+	virtual void serialize(std::fstream* writer, WhitespaceStrategy* whitespace) {}
 
-	virtual const std::string &	getNodeName(void);
-	virtual const std::string &	getNodeValue(void);
-	virtual void			setNodeValue(const std::string & nodeValue);
+	virtual const std::string& getNodeName(void);
+	virtual const std::string& getNodeValue(void);
+	virtual void			setNodeValue(const std::string& nodeValue);
 	virtual short			getNodeType(void);
-	virtual dom::Node *		getParentNode(void);
-	virtual dom::NodeList *		getChildNodes(void);
-	virtual dom::Node *		getFirstChild(void);
-	virtual dom::Node *		getLastChild(void);
-	virtual dom::Node *		getPreviousSibling(void);
-	virtual dom::Node *		getNextSibling(void);
-	virtual dom::Document *		getOwnerDocument(void);
-	virtual dom::Node *		insertBefore(dom::Node * newChild, dom::Node * refChild);
-	virtual dom::Node *		replaceChild(dom::Node * newChild, dom::Node * oldChild);
-	virtual dom::Node *		removeChild(dom::Node * oldChild);
-	virtual dom::Node *		appendChild(dom::Node * newChild);
-	virtual bool			hasChildNodes(void);
-	virtual const std::string &	getLocalName(void);
+	virtual dom::Node* getParentNode(void);
+	virtual dom::Node* getPreviousSibling(void);
+	virtual dom::Node* getNextSibling(void);
+	virtual dom::Document* getOwnerDocument(void);
+	virtual const std::string& getLocalName(void);
 
-	virtual void setParent(dom::Node * parent);
+	virtual void setParent(dom::Node* parent);
+};
+
+class Leaf_Impl : public virtual Node_Impl
+{
+protected:
+	Leaf_Impl(const std::string& name, short type) : Node_Impl(name, type) {}
+public:
+	virtual ~Leaf_Impl() {}
+
+	virtual dom::NodeList* getChildNodes(void) { return nullptr; }
+	virtual dom::Node* getFirstChild(void) { return nullptr; }
+	virtual dom::Node* getLastChild(void) { return nullptr; }
+	virtual dom::Node* insertBefore(dom::Node* newChild, dom::Node* refChild) { return nullptr; }
+	virtual dom::Node* replaceChild(dom::Node* newChild, dom::Node* oldChild) { return nullptr; }
+	virtual dom::Node* removeChild(dom::Node* oldChild) { return nullptr; }
+	virtual dom::Node* appendChild(dom::Node* newChild) { return nullptr; }
+	virtual bool hasChildNodes(void) { return false; }
+};
+
+class Composite_Impl : public virtual Node_Impl
+{
+private:
+	dom::NodeList nodes;
+protected:
+	Composite_Impl(const std::string& name, short type) : Node_Impl(name, type) {}
+public:
+	virtual ~Composite_Impl() {}
+
+	// TODO: implement serialize which calls serialize from each of its children.
+	virtual void serialize(std::fstream* writer, WhitespaceStrategy* whitespace) {}
+
+	virtual dom::NodeList* getChildNodes(void);
+	virtual dom::Node* getFirstChild(void);
+	virtual dom::Node* getLastChild(void);
+	virtual dom::Node* insertBefore(dom::Node* newChild, dom::Node* refChild);
+	virtual dom::Node* replaceChild(dom::Node* newChild, dom::Node* oldChild);
+	virtual dom::Node* removeChild(dom::Node* oldChild);
+	virtual dom::Node* appendChild(dom::Node* newChild);
+	virtual bool hasChildNodes(void);
 };
 
 #endif // NODE_H

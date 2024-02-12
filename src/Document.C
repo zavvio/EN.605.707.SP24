@@ -5,7 +5,9 @@
 #include "NodeList.H"
 #include "XMLValidator.H"
 
-Document_Impl::Document_Impl(void) : Node_Impl("", dom::Node::DOCUMENT_NODE)
+Document_Impl::Document_Impl(void) :
+	Node_Impl("", dom::Node::DOCUMENT_NODE),
+	Composite_Impl("", dom::Node::DOCUMENT_NODE)
 {
 	Node_Impl::document	= this;
 }
@@ -44,8 +46,9 @@ dom::Element * Document_Impl::getDocumentElement()
 }
 
 DocumentValidator::DocumentValidator(dom::Document * _parent, XMLValidator * xmlValidator) :
-  Node_Impl("", dom::Node::DOCUMENT_NODE),
-  parent(_parent)
+	Node_Impl("", dom::Node::DOCUMENT_NODE),
+	Composite_Impl("", dom::Node::DOCUMENT_NODE),
+	parent(_parent)
 {
 	schemaElement	= *xmlValidator->findSchemaElement("");
 }

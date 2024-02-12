@@ -38,7 +38,7 @@ namespace dom
 	};
 };
 
-class Element_Impl : public virtual dom::Element, Node_Impl
+class Element_Impl : public virtual dom::Element, Composite_Impl
 {
 private:
 	NamedNodeMap_Impl	attributes;
@@ -78,7 +78,7 @@ namespace dom
 	class NodeList;
 };
 
-class ElementValidator : public virtual ElementDecorator, public virtual Node_Impl
+class ElementValidator : public virtual ElementDecorator, public virtual Composite_Impl
 {
 private:
 	dom::Element *	parent;

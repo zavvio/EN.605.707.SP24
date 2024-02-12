@@ -1,7 +1,9 @@
 #include "Text.H"
 #include <stdexcept>
 
-Text_Impl::Text_Impl(const std::string value, dom::Document * document) : Node_Impl("", dom::Node::TEXT_NODE)
+Text_Impl::Text_Impl(const std::string value, dom::Document * document) :
+	Node_Impl("", dom::Node::TEXT_NODE),
+	Leaf_Impl("", dom::Node::TEXT_NODE)
 {
 	setNodeValue(value);
 	Node_Impl::document	= document;

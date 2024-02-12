@@ -34,7 +34,7 @@ namespace dom
 	};
 };
 
-class Text_Impl : public virtual dom::Text, Node_Impl
+class Text_Impl : public virtual dom::Text, Leaf_Impl
 {
 protected:
 	Text_Impl(const std::string value, dom::Document * document);

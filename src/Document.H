@@ -29,7 +29,7 @@ namespace dom
 	};
 };
 
-class Document_Impl : public virtual dom::Document, public virtual Node_Impl
+class Document_Impl : public virtual dom::Document, public virtual Composite_Impl
 {
 public:
 	Document_Impl(void);
@@ -53,7 +53,7 @@ class DocumentDecorator : public virtual dom::Document
 
 class XMLValidator;
 
-class DocumentValidator : public virtual DocumentDecorator, public virtual Node_Impl
+class DocumentValidator : public virtual DocumentDecorator, public virtual Composite_Impl
 {
 private:
 	dom::Document *	parent;

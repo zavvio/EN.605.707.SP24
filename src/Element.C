@@ -4,8 +4,10 @@
 #include "Document.H"
 #include "XMLValidator.H"
 
-Element_Impl::Element_Impl(const std::string & tagName, dom::Document * document) : Node_Impl(tagName, dom::Node::ELEMENT_NODE),
-  attributes(document)
+Element_Impl::Element_Impl(const std::string & tagName, dom::Document * document) :
+	Node_Impl(tagName, dom::Node::ELEMENT_NODE),
+	Composite_Impl(tagName, dom::Node::ELEMENT_NODE),
+	attributes(document)
 {
 	Node_Impl::document	= document;
 }
@@ -181,8 +183,9 @@ void Element_Impl::serialize(std::fstream * writer, WhitespaceStrategy * whitesp
 }
 
 ElementValidator::ElementValidator(dom::Element * _parent, XMLValidator * xmlValidator) :
-  Node_Impl("", dom::Node::ELEMENT_NODE),
-  parent(_parent)
+	Node_Impl("", dom::Node::ELEMENT_NODE),
+	Composite_Impl("", dom::Node::ELEMENT_NODE),
+	parent(_parent)
 {
 	schemaElement	= *xmlValidator->findSchemaElement(parent->getTagName());
 }

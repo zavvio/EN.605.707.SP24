@@ -10,6 +10,15 @@ namespace dom
     class Document;
 
     // [Strategy pattern] Strategy
+    //   - Declares an interface common to all supported algorithms.
+    //   - Context (XMLSerializer) uses this interface to call the algorithm defined by a ConcreteStrategy {Document_Impl, Element_Impl, Attr_Impl, Text_Impl}.
+    //   - The Strategy here is actually a bundle of two serialization algorithms {serializeMinimal, serializePretty}
+    //   - ConcreteStrategy here provides different output content.
+    //   - Note: Another Strategy in this application is std::ostream, and its
+    //   -       ConcreteStrategy children {iostream, ostringstream, ofstream} redirect outputs to various medium.
+    // [Decorator pattern] Component
+    //   - Defines the object interface which can have responsibilities added or removed from it dynamically.
+    //   - ConcreteComponent is Document_Impl, to be decorated by ConcreteDecorator {canAddTextDocument, canAddElementDocument}
     class Node
     {
     public:

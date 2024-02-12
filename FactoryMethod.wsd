@@ -3,34 +3,26 @@
 skinparam linetype polyline
 
 interface Product.Attr {
-    int i
-    int x
 }
 interface Product.Element {
-    int i
 }
 interface Product.Text {
-    int i
 }
 class ConcreteProduct.Attr_Impl {
-    int i
 }
 class ConcreteProduct.Element_Impl {
-    int i
 }
 class ConcreteProduct.Text_Impl {
-    int i
 }
 interface Creator.Document {
-    int i
-    +[FactoryMethod] createAttribute(...)   : Attr
-    +[FactoryMethod] createElement(...)     : Element
-    +[FactoryMethod] createTextNode(...)    : Text
+    +[FactoryMethod] createAttribute(...)   : Attr*
+    +[FactoryMethod] createElement(...)     : Element*
+    +[FactoryMethod] createTextNode(...)    : Text*
 }
 class ConcreteCreator.Document_Impl {
-    +[FactoryMethod] createAttribute(...)   : Attr
-    +[FactoryMethod] createElement(...)     : Element
-    +[FactoryMethod] createTextNode(...)    : Text
+    +[FactoryMethod] createAttribute(...)   : Attr*
+    +[FactoryMethod] createElement(...)     : Element*
+    +[FactoryMethod] createTextNode(...)    : Text*
 }
 
 Product.Attr        <|..    ConcreteProduct.Attr_Impl

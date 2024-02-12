@@ -12,7 +12,13 @@ namespace dom
     class NodeList;
     class Document;
 
-    // [Factory Method] Product
+    // [Factory Method pattern] Product
+    //   - defines the interface {Attr, Element, Text} of ConcreteProduct objects {Attr_Impl, Element_Impl, Text_Impl} the Factory Method creates.
+    //   - Factory Methods, {createAttribute(), createElement(), createTextNode()} are within the Creator interface (Document),
+    //       and realized by the ConcreteCreator (Document_Impl).
+    // [Decorator pattern] Component
+    //      - Defines the object interface which can have responsibilities added or removed from it dynamically.
+    //      - ConcreteComponent is Element_Impl, to be decorated by ConcreteDecorator {canAddTextElement, canAddElementElement, canAddAttributeElement}
     class Element : public virtual Node
     {
     public:
@@ -34,7 +40,17 @@ namespace dom
 };
 
 // [Factory Method pattern] ConcreteProduct
+//   - Implements one of the Product interface, {Attr, Element, Text}
+//   - Forms the actual object to be returned by the ConcreteCreator (Document_Impl) via one of the Factory Method {createAttribute(), createElement(), createTextNode()}
 // [Strategy pattern] ConcreteStrategy
+//   - This implements the algorithm using the Strategy (Node) interface.
+//   -   algorithms includes a bundle of {serializeMinimal, serializePretty}
+//   - Context (XMLSerializer) maintains reference to one such ConcreteStrategies,
+//   -   and defers interface calls to the algorithm implemented here.
+//   - From {Document_Impl, Element_Impl, Attr_Impl, Text_Impl}, these ConcreteStrategies provide output content differently.
+// [Decorator pattern] ConcreteComponent
+//      - Defines the object with responsibilities to be added or removed.
+//      - Based on Component interface Node, to be decorated by ConcreteDecorator {canAddTextElement, canAddElementElement, canAddAttributeElement}
 class Element_Impl : public virtual dom::Element, Node_Impl
 {
 private:

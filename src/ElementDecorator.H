@@ -10,6 +10,8 @@
 namespace dom
 {
     // [Decorator pattern] Decorator
+    //    - Defines a reference to a Component object and defines an interface that conforms to Component's interface.
+    //    - ConcreteDecorator {canAddTextElement, canAddElementElement, canAddAttributeElement} are used to decorate ConcreteComponent like Element_Impl.
     class ElementDecorator : public virtual Element
     {
     protected:
@@ -55,6 +57,10 @@ namespace dom
     };
 };
 
+// [Decorator pattern] ConcreteDecorator
+//    - Add or Remove responsibilities from the Component object.
+//    - Based on Decorator ElementDecorator for general conformance, it decorates ConcreteComponent like Element_Impl.
+//    - This validates the target Attribute (tag/name) is allowed or the add action is cancelled.
 class CanAddAttributeElement : public virtual dom::ElementDecorator
 {
 private:
@@ -67,6 +73,10 @@ public:
     virtual bool canAddAttribute(std::string name);
 };
 
+// [Decorator pattern] ConcreteDecorator
+//    - Add or Remove responsibilities from the Component object.
+//    - Based on Decorator ElementDecorator for general conformance, it decorates ConcreteComponent like Element_Impl.
+//    - This validates the target Element (tag/name) is allowed or the add action is cancelled.
 class CanAddElementElement : public virtual dom::ElementDecorator
 {
 private:
@@ -78,6 +88,10 @@ public:
     virtual bool canAddElement(std::string name);
 };
 
+// [Decorator pattern] ConcreteDecorator
+//    - Add or Remove responsibilities from the Component object.
+//    - Based on Decorator ElementDecorator for general conformance, it decorates ConcreteComponent like Element_Impl.
+//    - This validates Text is allowed or the add action is cancelled.
 class CanAddTextElement : public virtual dom::ElementDecorator
 {
 private:

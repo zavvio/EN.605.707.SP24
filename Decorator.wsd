@@ -7,6 +7,7 @@ class Component.Node {
 }
 
 class Component.Element {
+    +appendChild(Node* newChild)
     +setAttribute(string& name, string& value)
     +setAttributeNode(Attr* newAttr)
 }
@@ -23,6 +24,7 @@ class ConcreteComponent.Element_Impl {
 
 class Decorator.ElementDecorator {
     -Element* component
+    +appendChild(Node* newChild)
     +setAttribute(string& name, string& value)
     +setAttributeNode(Attr* newAttr)
 }
@@ -32,20 +34,32 @@ class Decorator.NodeDecorator {
     +appendChild(Node* newChild)
 }
 
-class ConcreteDecorator.canAddAttributeCheck {
+class ConcreteDecorator.canAddAttributeElement {
     -set<string> validAttributeNames
     +setAttribute(string& name, string& value)
     +setAttributeNode(Attr* newAttr)
     +canAddAttribute(string name)
 }
 
-class ConcreteDecorator.canAddElementCheck {
+class ConcreteDecorator.canAddElementElement {
     -set<string> validElementNames
     +appendChild(Node* newChild)
     +canAddElement(string name)
 }
 
-class ConcreteDecorator.canAddTextCheck {
+class ConcreteDecorator.canAddTextElement {
+    -bool isAllowed
+    +appendChild(Node* newChild)
+    +canAddText()
+}
+
+class ConcreteDecorator.canAddElementDocument {
+    -set<string> validElementNames
+    +appendChild(Node* newChild)
+    +canAddElement(string name)
+}
+
+class ConcreteDecorator.canAddTextDocument {
     -bool isAllowed
     +appendChild(Node* newChild)
     +canAddText()
@@ -58,8 +72,10 @@ Component.Element <|-down- Decorator.ElementDecorator
 Component.Element <-down-o Decorator.ElementDecorator : component
 Component.Node <|-down- Decorator.NodeDecorator
 Component.Node <-down-o Decorator.NodeDecorator : component
-Decorator.ElementDecorator <|-down- ConcreteDecorator.canAddAttributeCheck
-Decorator.NodeDecorator <|-down- ConcreteDecorator.canAddElementCheck
-Decorator.NodeDecorator <|-down- ConcreteDecorator.canAddTextCheck
+Decorator.ElementDecorator <|-down- ConcreteDecorator.canAddElementElement
+Decorator.ElementDecorator <|-down- ConcreteDecorator.canAddAttributeElement
+Decorator.ElementDecorator <|-down- ConcreteDecorator.canAddTextElement
+Decorator.NodeDecorator <|-down- ConcreteDecorator.canAddElementDocument
+Decorator.NodeDecorator <|-down- ConcreteDecorator.canAddTextDocument
 
 @enduml

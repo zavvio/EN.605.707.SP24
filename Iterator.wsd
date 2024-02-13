@@ -1,0 +1,39 @@
+@startuml Composite
+
+class Client.XMLSerializer {
+}
+
+class Aggregate.Node {
+	+createIterator(...)
+}
+
+class ConcreteAggregate.Node_Impl {
+	+createIterator(...)
+}
+
+class Iterator.XMLIterator {
+	+first(...)
+	+next(...)
+	+isDone(...)
+	+currentItem(...)
+}
+
+class ConcreteIterator.NodeIterator {
+	-dom::Node* _root;
+	-dom::Node* _currentChild;
+	-dom::Node* _currentGrandChild;
+	-dom::NodeList::iterator _currentChildItr;
+	-dom::NodeList* _grandChildren;
+	-NodeIterator* _grandChildrenItr;
+	-bool _done;
+	-int _state;
+}
+
+Client.XMLSerializer -left-> Aggregate.Node
+Client.XMLSerializer -right-> Iterator.XMLIterator
+Iterator.XMLIterator <|-down- ConcreteIterator.NodeIterator
+ConcreteAggregate.Node_Impl <-right- ConcreteIterator.NodeIterator
+ConcreteAggregate.Node_Impl .left.> ConcreteIterator.NodeIterator
+Aggregate.Node <|-down- ConcreteAggregate.Node_Impl
+
+@enduml

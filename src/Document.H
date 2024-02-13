@@ -29,6 +29,11 @@ namespace dom
 	};
 };
 
+//
+// [Composite pattern] (concrete) Composite
+// - Composite_Impl defines all common behaviors for composite objects in the composition. A composite has children.
+// - The concrete composite here redefine the primitive functions based on actual component type.
+//
 class Document_Impl : public virtual dom::Document, public virtual Composite_Impl
 {
 public:

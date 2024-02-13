@@ -11,6 +11,11 @@
 // java.io.Writer is output stream Strategy
 // java.io.BufferedWriter is output stream Concrete Strategy
 //
+
+//
+// [Composite pattern] Client
+// XMLSerializer manipulates objects in the composition through the Component interface (Node).
+//
 class XMLSerializer
 {
 private:

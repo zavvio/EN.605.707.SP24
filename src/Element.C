@@ -170,16 +170,15 @@ void Element_Impl::serialize(std::fstream * writer, WhitespaceStrategy * whitesp
 		*writer << ">";
 		whitespace->newLine(writer);
 		whitespace->incrementIndentation();
-
-		for (dom::NodeList::iterator i = getChildNodes()->begin(); i != getChildNodes()->end(); i++)
-			if (dynamic_cast<dom::Element *>(*i) != 0 || dynamic_cast<dom::Text *>(*i) != 0)
-				(*i)->serialize(writer, whitespace);
-
-		whitespace->decrementIndentation();
-		whitespace->prettyIndentation(writer);
-		*writer << "</" << getTagName() + ">";
-		whitespace->newLine(writer);
 	}
+}
+
+void Element_Impl::serialize_end(std::fstream* writer, WhitespaceStrategy* whitespace)
+{
+	whitespace->decrementIndentation();
+	whitespace->prettyIndentation(writer);
+	*writer << "</" << getTagName() + ">";
+	whitespace->newLine(writer);
 }
 
 ElementValidator::ElementValidator(dom::Element * _parent, XMLValidator * xmlValidator) :

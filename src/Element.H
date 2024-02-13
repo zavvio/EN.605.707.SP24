@@ -22,6 +22,7 @@ namespace dom
 		// Serialization Data Extraction Strategy
 		//
 		virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace)		= 0;
+		virtual void serialize_end(std::fstream* writer, WhitespaceStrategy* whitespace) = 0;
 
 		virtual const std::string &	getAttribute(const std::string & name)					= 0;
 		virtual Attr *			getAttributeNode(const std::string & name)				= 0;
@@ -38,6 +39,11 @@ namespace dom
 	};
 };
 
+//
+// [Composite pattern] (concrete) Composite
+// - Composite_Impl defines all common behaviors for composite objects in the composition. A composite has children.
+// - The concrete composite here redefine the primitive functions based on actual component type.
+//
 class Element_Impl : public virtual dom::Element, Composite_Impl
 {
 private:
@@ -53,6 +59,7 @@ public:
 	// Serialization Data Extraction Strategy
 	//
 	virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace);
+	virtual void serialize_end(std::fstream* writer, WhitespaceStrategy* whitespace);
 
 	virtual const std::string &	getAttribute(const std::string & name);
 	virtual dom::Attr *		getAttributeNode(const std::string & name);
@@ -89,8 +96,15 @@ public:
 	//
 	// Serialization Data Extraction Strategy
 	//
-	virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace)
-	  { parent->serialize(writer, whitespace); }
+	virtual void serialize(std::fstream* writer, WhitespaceStrategy* whitespace)
+	{
+		parent->serialize(writer, whitespace);
+	}
+
+	virtual void serialize_end(std::fstream* writer, WhitespaceStrategy* whitespace)
+	{
+		parent->serialize_end(writer, whitespace);
+	}
 
 	//
 	// Undecorated pass-through methods.

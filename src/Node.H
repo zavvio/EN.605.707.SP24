@@ -4,11 +4,21 @@
 #include <string>
 #include "NodeList.H"
 #include "WhitespaceStrategy.H"
+#include "XMLIterator.H"
 
 namespace dom
 {
 	class Document;
 
+	//
+	// [Composite pattern] Component
+	// - Node declares the interface for objects in the composition.
+	// - Node_Impl implements default behavior for the interface common to all classes
+	// - Node declares an interface for accessing and managing its child components.
+	//
+	// [Iterator pattern] Aggregate
+	// - Node defines the interface for creating an Iterator object (XMLIterator).
+	//
 	class Node
 	{
 	public:
@@ -22,7 +32,9 @@ namespace dom
 		//
 		// Serialization Data Extraction Strategy
 		//
-		virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace)		= 0;
+		virtual void serialize(std::fstream* writer, WhitespaceStrategy* whitespace) = 0;
+		virtual void serialize_end(std::fstream* writer, WhitespaceStrategy* whitespace) = 0;
+		virtual NodeIterator* createIterator() = 0;
 
 		virtual const std::string &	getNodeName(void)				= 0;
 		virtual const std::string &	getNodeValue(void)				= 0;
@@ -67,6 +79,10 @@ namespace dom
 	};
 };
 
+//
+// [Iterator pattern] ConcreteAggregate
+// - Node_Impl implements the Iterator (XMLIterator) creation interface to return an instance of the proper ConcreteIterator (NodeIterator).
+//
 class Node_Impl : public virtual dom::Node
 {
 private:
@@ -87,6 +103,8 @@ public:
 	// Serialization Data Extraction Strategy
 	//
 	virtual void serialize(std::fstream* writer, WhitespaceStrategy* whitespace) {}
+	virtual void serialize_end(std::fstream* writer, WhitespaceStrategy* whitespace) {}
+	virtual NodeIterator* createIterator();
 
 	virtual const std::string& getNodeName(void);
 	virtual const std::string& getNodeValue(void);
@@ -101,12 +119,20 @@ public:
 	virtual void setParent(dom::Node* parent);
 };
 
+//
+// [Composite pattern] (abstract) Leaf
+// - Leaf_Impl represents leaf objects in the composition. A leaf has no children.
+// - It defines behavior for primitive objects in the composition.
+// - Concrete Leaf are {Attr_Impl, Text_Impl}, sharing common behaviors defined here.
+//
 class Leaf_Impl : public virtual Node_Impl
 {
 protected:
 	Leaf_Impl(const std::string& name, short type) : Node_Impl(name, type) {}
 public:
 	virtual ~Leaf_Impl() {}
+
+	virtual void serialize(std::fstream* writer, WhitespaceStrategy* whitespace) {}
 
 	virtual dom::NodeList* getChildNodes(void) { return nullptr; }
 	virtual dom::Node* getFirstChild(void) { return nullptr; }
@@ -118,6 +144,12 @@ public:
 	virtual bool hasChildNodes(void) { return false; }
 };
 
+//
+// [Composite pattern] (abstract) Composite
+// - Composite_Impl defines behavior for components having children.
+// - It stores child components and implements child-related operations in the Component interface.
+// - Concrete composites are {Document_Impl, Element_Impl}, sharing common behaviors defined here.
+//
 class Composite_Impl : public virtual Node_Impl
 {
 private:

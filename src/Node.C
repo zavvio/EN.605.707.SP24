@@ -8,6 +8,11 @@ Node_Impl::~Node_Impl()
 {
 }
 
+NodeIterator* Node_Impl::createIterator()
+{
+	return new NodeIterator(this);
+}
+
 const std::string &	Node_Impl::getNodeName(void)
 {
 	return name;

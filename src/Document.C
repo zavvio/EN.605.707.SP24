@@ -18,7 +18,7 @@ void Document_Impl::serialize(std::fstream * writer, WhitespaceStrategy * whites
 {
 	*writer << "<? xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	whitespace->newLine(writer);
-	getDocumentElement()->serialize(writer, whitespace);
+	//getDocumentElement()->serialize(writer, whitespace);
 }
 
 dom::Element *	Document_Impl::createElement(const std::string & tagName)

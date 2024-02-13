@@ -1,0 +1,55 @@
+@startuml Composite
+
+class Component.Node {
+	+createIterator(...)
+	+serialize(...)
+	+insertBefore(...)
+	+replaceChild(...)
+	+appendChild(...)
+	+removeChild(...)
+	+getChildNodes(...)
+}
+
+class Leaf.Leaf_Impl {
+	+serialize(...)
+}
+
+class Leaf.Attr_Impl {
+	+serialize(...)
+}
+
+class Leaf.Text_Impl {
+	+serialize(...)
+}
+
+class Composite.Composite_Impl {
+	-dom::NodeList nodes
+	+serialize(...)
+	+insertBefore(...)
+	+replaceChild(...)
+	+appendChild(...)
+	+removeChild(...)
+	+getChildNodes(...)
+}
+
+class Composite.Document_Impl {
+	+serialize(...)
+}
+
+class Composite.Element_Impl {
+	+serialize(...)
+}
+
+class Client.XMLSerializer {
+}
+
+Client.XMLSerializer -right-> Component.Node
+Leaf.Leaf_Impl <|-down- Leaf.Attr_Impl
+Leaf.Leaf_Impl <|-down- Leaf.Text_Impl
+Composite.Composite_Impl <|-down- Composite.Document_Impl
+Composite.Composite_Impl <|-down- Composite.Element_Impl
+Component.Node <|-down- Leaf.Leaf_Impl
+Component.Node <|-down- Composite.Composite_Impl
+Component.Node <--o Composite.Composite_Impl
+
+@enduml

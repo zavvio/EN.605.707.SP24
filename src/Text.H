@@ -34,6 +34,11 @@ namespace dom
 	};
 };
 
+//
+// [Composite pattern] (concrete) Leaf
+// - Leaf_Impl defined all common behaviors for leaf objects in the composition. A leaf has no children.
+// - The concrete leaf here redefine the primitive functions based on actual component type.
+//
 class Text_Impl : public virtual dom::Text, Leaf_Impl
 {
 protected:

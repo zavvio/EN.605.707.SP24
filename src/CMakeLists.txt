@@ -24,4 +24,7 @@ target_sources(Patterns PUBLIC
 	XMLTokenizer.H
 	XMLValidator.C
 	XMLValidator.H
+	ValidChildren.C
+	ValidChildren.H
+	WhitespaceStrategy.H
 	)

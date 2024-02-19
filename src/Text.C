@@ -11,11 +11,11 @@ Text_Impl::~Text_Impl()
 {
 }
 
-void Text_Impl::serialize(std::fstream * writer, WhitespaceStrategy * whitespace)
+void Text_Impl::serialize(std::fstream * writer, int indentationLevel)
 {
-	whitespace->prettyIndentation(writer);
+	serialize_indentation(writer, indentationLevel);
 	*writer << getData();
-	whitespace->newLine(writer);
+	serialize_newLine(writer);
 }
 
 const std::string &	Text_Impl::getName(void)

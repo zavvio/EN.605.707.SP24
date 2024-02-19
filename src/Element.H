@@ -9,63 +9,97 @@
 
 namespace dom
 {
-	class Attr;
-	class NodeList;
-	class Document;
+    class Attr;
+    class NodeList;
+    class Document;
 
-	class Element : public virtual Node
-	{
-	public:
-		virtual ~Element() {}
+    class Element : public virtual Node
+    {
+    public:
+        virtual ~Element() {}
 
-		//
-		// Serialization Data Extraction Strategy
-		//
-		virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace)		= 0;
+        //
+        // Serialization Data Extraction Strategy
+        //
+        virtual void serialize(std::fstream * writer, int indentationLevel)		= 0;
 
-		virtual const std::string &	getAttribute(const std::string & name)					= 0;
-		virtual Attr *			getAttributeNode(const std::string & name)				= 0;
-		virtual NodeList *		getElementsByTagName(const std::string & tagName)			= 0;
-		virtual const std::string &	getTagName(void)							= 0;
-		virtual bool			hasAttribute(const std::string & name)					= 0;
-		virtual void			removeAttribute(const std::string & name)				= 0;
-		virtual Attr *			removeAttributeNode(Attr * oldAttr)					= 0;
-		virtual void			setAttribute(const std::string & name, const std::string & value)	= 0;
-		virtual Attr *			setAttributeNode(Attr * newAttr)					= 0;
+        virtual const std::string &	getAttribute(const std::string & name)					= 0;
+        virtual Attr *			getAttributeNode(const std::string & name)				= 0;
+        virtual NodeList *		getElementsByTagName(const std::string & tagName)			= 0;
+        virtual const std::string &	getTagName(void)							= 0;
+        virtual bool			hasAttribute(const std::string & name)					= 0;
+        virtual void			removeAttribute(const std::string & name)				= 0;
+        virtual Attr *			removeAttributeNode(Attr * oldAttr)					= 0;
+        virtual void			setAttribute(const std::string & name, const std::string & value)	= 0;
+        virtual Attr *			setAttributeNode(Attr * newAttr)					= 0;
 
-		virtual dom::NamedNodeMap *	getAttributes(void)							= 0;
-		virtual bool			hasAttributes(void)							= 0;
-	};
+        virtual dom::NamedNodeMap *	getAttributes(void)							= 0;
+        virtual bool			hasAttributes(void)							= 0;
+    };
 };
 
+//
+// [Template method pattern] AbstractClass
+// - This declares abstract primitive operations (despite having default implementations)
+//   that concrete subclasses define/override {serialize_indentation, serialize_newLine} with customized algorithm.
+// - It also implements a template method {serialize} defining the skeleton of the serialization algorithm;
+//   it performs some fixed actions, and calls the customizable primitive operations in a predefined order;
+//   it also calls serialize operation from other Node objects.
+//
 class Element_Impl : public virtual dom::Element, Node_Impl
 {
 private:
-	NamedNodeMap_Impl	attributes;
+    NamedNodeMap_Impl	attributes;
 protected:
-	Element_Impl(const std::string & tagName, dom::Document * document);
+    Element_Impl(const std::string & tagName, dom::Document * document);
+    // [Template method pattern] PrimitiveOperations
+    virtual void serialize_indentation(std::fstream* wwriter, int indentationLevel) {}
+    virtual void serialize_newLine(std::fstream* wwriter) {}
 public:
-	friend class Document_Impl;
+    friend class Document_Impl;
 
-	virtual ~Element_Impl();
+    virtual ~Element_Impl();
 
-	//
-	// Serialization Data Extraction Strategy
-	//
-	virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace);
+    //
+    // Serialization Data Extraction Strategy
+    //
+    // [Template method pattern] TemplateMethod
+    virtual void serialize(std::fstream * writer, int indentationLevel);
 
-	virtual const std::string &	getAttribute(const std::string & name);
-	virtual dom::Attr *		getAttributeNode(const std::string & name);
-	virtual dom::NodeList *		getElementsByTagName(const std::string & tagName);
-	virtual const std::string &	getTagName(void);
-	virtual bool			hasAttribute(const std::string & name);
-	virtual void			removeAttribute(const std::string & name);
-	virtual dom::Attr *		removeAttributeNode(dom::Attr * oldAttr);
-	virtual void			setAttribute(const std::string & name, const std::string & value);
-	virtual dom::Attr *		setAttributeNode(dom::Attr * newAttr);
+    virtual const std::string &	getAttribute(const std::string & name);
+    virtual dom::Attr *		getAttributeNode(const std::string & name);
+    virtual dom::NodeList *		getElementsByTagName(const std::string & tagName);
+    virtual const std::string &	getTagName(void);
+    virtual bool			hasAttribute(const std::string & name);
+    virtual void			removeAttribute(const std::string & name);
+    virtual dom::Attr *		removeAttributeNode(dom::Attr * oldAttr);
+    virtual void			setAttribute(const std::string & name, const std::string & value);
+    virtual dom::Attr *		setAttributeNode(dom::Attr * newAttr);
 
-	virtual dom::NamedNodeMap *	getAttributes(void)	{ return &attributes; }
-	virtual bool			hasAttributes(void)	{ return attributes.size() > 0; }
+    virtual dom::NamedNodeMap *	getAttributes(void)	{ return &attributes; }
+    virtual bool			hasAttributes(void)	{ return attributes.size() > 0; }
+};
+
+//
+// [Template method pattern] ConcreteClass
+// - This implements the primitive operations to carry out subclass-specific steps of the algorithm.
+//
+class PrettyElement_Impl : public virtual Element_Impl
+{
+public:
+    friend class PrettyDocument_Impl;
+protected:
+    PrettyElement_Impl(const std::string& tagName, dom::Document* document) : Element_Impl(tagName, document) {}
+
+    // [Template method pattern] PrimitiveOperation
+    virtual void serialize_indentation(std::fstream* wwriter, int indentationLevel)
+    {
+        for (int i = 0; i < indentationLevel; i++)
+            *wwriter << "\t";
+    }
+
+    // [Template method pattern] PrimitiveOperation
+    virtual void serialize_newLine(std::fstream* wwriter) { *wwriter << "\n"; }
 };
 
 class ElementDecorator : public virtual dom::Element
@@ -75,63 +109,63 @@ class ElementDecorator : public virtual dom::Element
 class XMLValidator;
 namespace dom
 {
-	class NodeList;
+    class NodeList;
 };
 
 class ElementValidator : public virtual ElementDecorator, public virtual Node_Impl
 {
 private:
-	dom::Element *	parent;
-	ValidChildren *	schemaElement;
+    dom::Element *	parent;
+    ValidChildren *	schemaElement;
 public:
-	ElementValidator(dom::Element * _parent, XMLValidator * xmlValidator);
+    ElementValidator(dom::Element * _parent, XMLValidator * xmlValidator);
 
-	//
-	// Serialization Data Extraction Strategy
-	//
-	virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace)
-	  { parent->serialize(writer, whitespace); }
+    //
+    // Serialization Data Extraction Strategy
+    //
+    virtual void serialize(std::fstream * writer, int indentationLevel)
+      { parent->serialize(writer, indentationLevel); }
 
-	//
-	// Undecorated pass-through methods.
-	//
-	virtual const std::string &	getAttribute(const std::string & name)		{ return parent->getAttribute(name); }
-	virtual dom::Attr *		getAttributeNode(const std::string & name)	{ return parent->getAttributeNode(name); }
-	virtual dom::NodeList *		getElementsByTagName(const std::string & tagName)
-	  { return parent->getElementsByTagName(tagName); }
-	virtual const std::string &	getTagName(void)				{ return parent->getTagName(); }
-	virtual bool			hasAttribute(const std::string & name)		{ return parent->hasAttribute(name); }
-	virtual void			removeAttribute(const std::string & name)	{ parent->removeAttribute(name); }
-	virtual dom::Attr *		removeAttributeNode(dom::Attr * oldAttr) { return parent->removeAttributeNode(oldAttr); }
+    //
+    // Undecorated pass-through methods.
+    //
+    virtual const std::string &	getAttribute(const std::string & name)		{ return parent->getAttribute(name); }
+    virtual dom::Attr *		getAttributeNode(const std::string & name)	{ return parent->getAttributeNode(name); }
+    virtual dom::NodeList *		getElementsByTagName(const std::string & tagName)
+      { return parent->getElementsByTagName(tagName); }
+    virtual const std::string &	getTagName(void)				{ return parent->getTagName(); }
+    virtual bool			hasAttribute(const std::string & name)		{ return parent->hasAttribute(name); }
+    virtual void			removeAttribute(const std::string & name)	{ parent->removeAttribute(name); }
+    virtual dom::Attr *		removeAttributeNode(dom::Attr * oldAttr) { return parent->removeAttributeNode(oldAttr); }
 
-	//
-	// Decorated Methods
-	//
-	virtual void			setAttribute(const std::string & name, const std::string & value);
-	virtual dom::Attr *		setAttributeNode(dom::Attr * newAttr);
-	virtual dom::Node *		insertBefore(dom::Node * newChild, dom::Node * refChild);
-	virtual dom::Node *		replaceChild(dom::Node * newChild, dom::Node * oldChild);
-	virtual dom::Node *		appendChild(dom::Node * newChild);
+    //
+    // Decorated Methods
+    //
+    virtual void			setAttribute(const std::string & name, const std::string & value);
+    virtual dom::Attr *		setAttributeNode(dom::Attr * newAttr);
+    virtual dom::Node *		insertBefore(dom::Node * newChild, dom::Node * refChild);
+    virtual dom::Node *		replaceChild(dom::Node * newChild, dom::Node * oldChild);
+    virtual dom::Node *		appendChild(dom::Node * newChild);
 
-	//
-	// Reimplemented Node members
-	//
-	virtual dom::NamedNodeMap *	getAttributes(void)				{ return parent->getAttributes(); }
-	virtual bool			hasAttributes(void)				{ return parent->hasAttributes(); }
-	virtual const std::string &	getNodeName(void)				{ return parent->getNodeName(); }
-	virtual const std::string &	getNodeValue(void)				{ return parent->getNodeValue(); }
-	virtual void			setNodeValue(const std::string & nodeValue)	{ parent->setNodeValue(nodeValue); }
-	virtual short			getNodeType(void)				{ return parent->getNodeType(); }
-	virtual dom::Node *		getParentNode(void)				{ return parent->getParentNode(); }
-	virtual dom::NodeList *		getChildNodes(void)				{ return parent->getChildNodes(); }
-	virtual dom::Node *		getFirstChild(void)				{ return parent->getFirstChild(); }
-	virtual dom::Node *		getLastChild(void)				{ return parent->getLastChild(); }
-	virtual dom::Node *		getPreviousSibling(void)			{ return parent->getPreviousSibling(); }
-	virtual dom::Node *		getNextSibling(void)				{ return parent->getNextSibling(); }
-	virtual dom::Document *		getOwnerDocument(void)				{ return parent->getOwnerDocument(); }
-	virtual dom::Node *		removeChild(Node * oldChild)			{ return parent->removeChild(oldChild); }
-	virtual bool			hasChildNodes(void)				{ return parent->hasChildNodes(); }
-	virtual const std::string &	getLocalName(void)				{ return parent->getLocalName(); }
+    //
+    // Reimplemented Node members
+    //
+    virtual dom::NamedNodeMap *	getAttributes(void)				{ return parent->getAttributes(); }
+    virtual bool			hasAttributes(void)				{ return parent->hasAttributes(); }
+    virtual const std::string &	getNodeName(void)				{ return parent->getNodeName(); }
+    virtual const std::string &	getNodeValue(void)				{ return parent->getNodeValue(); }
+    virtual void			setNodeValue(const std::string & nodeValue)	{ parent->setNodeValue(nodeValue); }
+    virtual short			getNodeType(void)				{ return parent->getNodeType(); }
+    virtual dom::Node *		getParentNode(void)				{ return parent->getParentNode(); }
+    virtual dom::NodeList *		getChildNodes(void)				{ return parent->getChildNodes(); }
+    virtual dom::Node *		getFirstChild(void)				{ return parent->getFirstChild(); }
+    virtual dom::Node *		getLastChild(void)				{ return parent->getLastChild(); }
+    virtual dom::Node *		getPreviousSibling(void)			{ return parent->getPreviousSibling(); }
+    virtual dom::Node *		getNextSibling(void)				{ return parent->getNextSibling(); }
+    virtual dom::Document *		getOwnerDocument(void)				{ return parent->getOwnerDocument(); }
+    virtual dom::Node *		removeChild(Node * oldChild)			{ return parent->removeChild(oldChild); }
+    virtual bool			hasChildNodes(void)				{ return parent->hasChildNodes(); }
+    virtual const std::string &	getLocalName(void)				{ return parent->getLocalName(); }
 };
 
 #endif // ELEMENT_H

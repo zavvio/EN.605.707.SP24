@@ -12,11 +12,16 @@ Document_Impl::Document_Impl(void) : Node_Impl("", dom::Node::DOCUMENT_NODE)
 
 Document_Impl::~Document_Impl() {}
 
-void Document_Impl::serialize(std::fstream * writer, WhitespaceStrategy * whitespace)
+void Document_Impl::serialize(std::fstream* writer, int indentationLevel)
 {
 	*writer << "<? xml version=\"1.0\" encoding=\"UTF-8\"?>";
-	whitespace->newLine(writer);
-	getDocumentElement()->serialize(writer, whitespace);
+	serialize_newLine(writer);
+	getDocumentElement()->serialize(writer, indentationLevel);
+}
+
+void Document_Impl::serializeDOM(std::fstream* writer, int indentationLevel)
+{
+	serialize(writer, indentationLevel);
 }
 
 dom::Element *	Document_Impl::createElement(const std::string & tagName)
@@ -46,6 +51,21 @@ dom::Element * Document_Impl::getDocumentElement()
 dom::Iterator * Document_Impl::createIterator(dom::Node * node)
 {
 	return new DOMIterator(node, this);
+}
+
+dom::Element* PrettyDocument_Impl::createElement(const std::string& tagName)
+{
+	return new PrettyElement_Impl(tagName, this);
+}
+
+dom::Text* PrettyDocument_Impl::createTextNode(const std::string& data)
+{
+	return new PrettyText_Impl(data, this);
+}
+
+dom::Attr* PrettyDocument_Impl::createAttribute(const std::string& name)
+{
+	return new PrettyAttr_Impl(name, this);
 }
 
 DocumentValidator::DocumentValidator(dom::Document * _parent, XMLValidator * xmlValidator) :

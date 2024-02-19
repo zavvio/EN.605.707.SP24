@@ -29,7 +29,7 @@ namespace dom
 		//
 		// Serialization Data Extraction Strategy
 		//
-		virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace)	= 0;
+		virtual void serialize(std::fstream * writer, int indentationLevel)	= 0;
 
 		virtual Element *	createElement(const std::string & tagName)	= 0;
 		virtual Text *		createTextNode(const std::string & data)	= 0;
@@ -43,7 +43,21 @@ namespace dom
 	};
 };
 
-class Document_Impl : public virtual dom::Document, public virtual Node_Impl
+class DOM
+{
+public:
+	virtual void serializeDOM(std::fstream* writer, int indentationLevel) = 0;
+};
+
+//
+// [Template method pattern] AbstractClass
+// - This declares abstract primitive operations (despite having default implementations)
+//   that concrete subclasses define/override {serialize_indentation, serialize_newLine} with customized algorithm.
+// - It also implements a template method {serialize} defining the skeleton of the serialization algorithm;
+//   it performs some fixed actions, and calls the customizable primitive operations in a predefined order;
+//   it also calls serialize operation from other Node objects.
+//
+class Document_Impl : public virtual dom::Document, public virtual Node_Impl, public virtual DOM
 {
 public:
 	Document_Impl(void);
@@ -53,17 +67,47 @@ public:
 	//
 	// Serialization Data Extraction Strategy
 	//
-	virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace);
+	// [Template method pattern] TemplateMethod
+	virtual void serialize(std::fstream * writer, int indentationLevel);
+
+	virtual void serializeDOM(std::fstream* writer, int indentationLevel);
 
 	virtual dom::Element *	createElement(const std::string & tagName);
 	virtual dom::Text *	createTextNode(const std::string & data);
 	virtual dom::Attr *	createAttribute(const std::string & name);
 	virtual dom::Element *	getDocumentElement();
+protected:
+	// [Template method pattern] PrimitiveOperations
+	virtual void serialize_indentation(std::fstream* wwriter, int indentationLevel) {}
+	virtual void serialize_newLine(std::fstream* wwriter) {}
 
 	//
 	// Iterator Factory
 	//
 	dom::Iterator *		createIterator(dom::Node * node);
+};
+
+//
+// [Template method pattern] ConcreteClass
+// - This implements the primitive operations to carry out subclass-specific steps of the algorithm.
+//
+class PrettyDocument_Impl : public virtual Document_Impl
+{
+public:
+	PrettyDocument_Impl(void) : Node_Impl("", dom::Node::DOCUMENT_NODE), Document_Impl() {}
+	dom::Element* createElement(const std::string& tagName);
+	dom::Text* createTextNode(const std::string& data);
+	dom::Attr* createAttribute(const std::string& name);
+
+protected:
+	// [Template method pattern] PrimitiveOperation
+	virtual void serialize_indentation(std::fstream* wwriter, int indentationLevel)
+	{
+		for (int i = 0; i < indentationLevel; i++)
+			*wwriter << "\t";
+	}
+	// [Template method pattern] PrimitiveOperation
+	virtual void serialize_newLine(std::fstream* wwriter) { *wwriter << "\n"; }
 };
 
 class DOMIterator : public virtual dom::Iterator
@@ -99,8 +143,8 @@ public:
 	//
 	// Serialization Data Extraction Strategy
 	//
-	virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace)
-	  { parent->serialize(writer, whitespace); }
+	virtual void serialize(std::fstream * writer, int indentationLevel)
+	  { parent->serialize(writer, indentationLevel); }
 
 	//
 	// Undecorated pass-through methods.

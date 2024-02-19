@@ -14,7 +14,7 @@ Attr_Impl::Attr_Impl(const std::string & tagName, const std::string & value, dom
 
 Attr_Impl::~Attr_Impl() {}
 
-void Attr_Impl::serialize(std::fstream * writer, WhitespaceStrategy * whitespace)
+void Attr_Impl::serialize(std::fstream * writer, int indentationLevel)
 {
 	*writer << " " << getName() << "=\"" << getValue() << "\"";
 }

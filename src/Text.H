@@ -17,7 +17,7 @@ namespace dom
 		//
 		// Serialization Data Extraction Strategy
 		//
-		virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace)	= 0;
+		virtual void serialize(std::fstream * writer, int indentationLevel)	= 0;
 
 		virtual const std::string &	getName(void)							= 0;
 		virtual const std::string &	getData(void)							= 0;
@@ -34,10 +34,21 @@ namespace dom
 	};
 };
 
+//
+// [Template method pattern] AbstractClass
+// - This declares abstract primitive operations (despite having default implementations)
+//   that concrete subclasses define/override {serialize_indentation, serialize_newLine} with customized algorithm.
+// - It also implements a template method {serialize} defining the skeleton of the serialization algorithm;
+//   it performs some fixed actions, and calls the customizable primitive operations in a predefined order;
+//   it also calls serialize operation from other Node objects.
+//
 class Text_Impl : public virtual dom::Text, Node_Impl
 {
 protected:
 	Text_Impl(const std::string value, dom::Document * document);
+	// [Template method pattern] PrimitiveOperations
+	virtual void serialize_indentation(std::fstream* wwriter, int indentationLevel) {}
+	virtual void serialize_newLine(std::fstream* wwriter) {}
 public:
 	friend class Document_Impl;
 
@@ -46,7 +57,8 @@ public:
 	//
 	// Serialization Data Extraction Strategy
 	//
-	virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace);
+	// [Template method pattern] TemplateMethod
+	virtual void serialize(std::fstream * writer, int indentationLevel);
 
 	virtual const std::string &	getName(void);
 	virtual const std::string &	getData(void);
@@ -68,6 +80,25 @@ public:
 	virtual Node *			replaceChild(Node * newChild, Node * oldChild)	{ return 0; }
 	virtual Node *			removeChild(Node * oldChild)			{ return 0; }
 	virtual Node *			appendChild(Node * newChild)			{ return 0; }
+};
+
+//
+// [Template method pattern] ConcreteClass
+// - This implements the primitive operations to carry out subclass-specific steps of the algorithm.
+//
+class PrettyText_Impl : public virtual Text_Impl
+{
+public:
+	PrettyText_Impl(const std::string value, dom::Document* document) : Text_Impl(value, document) {}
+protected:
+	// [Template method pattern] PrimitiveOperation
+	virtual void serialize_indentation(std::fstream* wwriter, int indentationLevel)
+	{
+		for (int i = 0; i < indentationLevel; i++)
+			*wwriter << "\t";
+	}
+	// [Template method pattern] PrimitiveOperation
+	virtual void serialize_newLine(std::fstream* wwriter) { *wwriter << "\n"; }
 };
 
 #endif // TEXT_H

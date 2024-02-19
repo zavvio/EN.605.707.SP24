@@ -8,13 +8,13 @@
 void XMLSerializer::serializePretty(dom::Node * node)
 {
 	WhitespaceStrategy *	ws	= new PrettyWhitespaceStrategy;
-	node->serialize(file, ws);
+	node->serialize(file, 0);
 	delete ws;
 }
 
 void XMLSerializer::serializeMinimal(dom::Node * node)
 {
 	WhitespaceStrategy *	ws	= new MinimalWhitespaceStrategy;
-	node->serialize(file, ws);
+	node->serialize(file, 0);
 	delete ws;
 }

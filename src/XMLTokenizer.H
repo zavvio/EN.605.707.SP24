@@ -2,6 +2,9 @@
 #include <fstream>
 #include <ios>
 #include <regex>
+#include "XMLBuilder.H"
+
+class DOM;
 
 class XMLTokenizer
 {
@@ -41,6 +44,7 @@ private:
 	std::regex		space_to_eol;
 
 	virtual void		update_matchers(const std::ssub_match &, const std::ssub_match & suffix);
+	virtual void rewind();
 public:
 	class XMLToken
 	{
@@ -67,8 +71,9 @@ public:
 		XMLToken(const std::string & t, TokenTypes tt);
 
 		virtual ~XMLToken() {}
-
-		virtual const std::string &	getToken(void)		{ return token; }
+		
+		virtual const std::string& getToken(void) { return token; }
+		virtual const std::string getCleanToken(void);
 		virtual TokenTypes		getTokenType(void)	{ return token_type; }
 		virtual const char *		toString(void);
 	};
@@ -79,4 +84,6 @@ public:
 	virtual int		getLineNumber(void)	{ return line_number; }
 	virtual int		getLineCharacter(void)	{ return index; }
 	virtual XMLToken *	getNextToken(void);
+
+	virtual DOM* construct(XMLBuilder* builder);
 };

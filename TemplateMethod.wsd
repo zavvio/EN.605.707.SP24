@@ -1,0 +1,59 @@
+@startuml TemplateMethod
+
+class AbstractClass.Document_Impl {
+	+serialize(...) {...}
+	#serialize_indentation(...) { }
+	#serialize_newLine(...) { }
+}
+
+class ConcreteClass.PrettyDocument_Impl {
+	#serialize_indentation(...)
+	#serialize_newLine(...)
+}
+
+AbstractClass.Document_Impl <|-down- ConcreteClass.PrettyDocument_Impl
+
+class AbstractClass.Element_Impl {
+	+serialize(...) {...}
+	#serialize_indentation(...) { }
+	#serialize_newLine(...) { }
+	+getTagName()
+}
+
+class ConcreteClass.PrettyElement_Impl {
+	#serialize_indentation(...)
+	#serialize_newLine(...)
+}
+
+AbstractClass.Element_Impl <|-down- ConcreteClass.PrettyElement_Impl
+
+class AbstractClass.Attr_Impl {
+	+serialize(...) {...}
+	#serialize_indentation(...) { }
+	#serialize_newLine(...) { }
+	+getName()
+	+getValue()
+}
+
+class ConcreteClass.PrettyAttr_Impl {
+	#serialize_indentation(...)
+	#serialize_newLine(...)
+}
+
+AbstractClass.Attr_Impl <|-down- ConcreteClass.PrettyAttr_Impl
+
+class AbstractClass.Text_Impl {
+	+serialize(...) {...}
+	#serialize_indentation(...) { }
+	#serialize_newLine(...) { }
+	+getData()
+}
+
+class ConcreteClass.PrettyText_Impl {
+	#serialize_indentation(...)
+	#serialize_newLine(...)
+}
+
+AbstractClass.Text_Impl <|-down- ConcreteClass.PrettyText_Impl
+
+@enduml

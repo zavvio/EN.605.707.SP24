@@ -43,6 +43,14 @@ namespace dom
 	};
 };
 
+//
+// [Builder pattern] (abstract) Product
+// - It represents the complex object under construction.
+// - ConcreteBuilder {MinimalNodeXMLBuilder, PrettyNodeXMLBuilder} build the product's internal representation,
+//   and define the process by which it's assembled.
+// - It includes classes that define the constituent parts,
+//   including interfaces for assembling the parts into the final result.
+//
 class DOM
 {
 public:
@@ -56,6 +64,16 @@ public:
 // - It also implements a template method {serialize} defining the skeleton of the serialization algorithm;
 //   it performs some fixed actions, and calls the customizable primitive operations in a predefined order;
 //   it also calls serialize operation from other Node objects.
+//
+// [Abstract Factory pattern] AbstractProduct (Also ConcreteProduct here with the default implmentations)
+// - It defines an interface for a type of product object.
+//
+// [Builder pattern] Product
+// - It represents the complex object under construction.
+// - ConcreteBuilder {MinimalNodeXMLBuilder, PrettyNodeXMLBuilder} build the product's internal representation,
+//   and define the process by which it's assembled.
+// - It includes classes that define the constituent parts,
+//   including interfaces for assembling the parts into the final result.
 //
 class Document_Impl : public virtual dom::Document, public virtual Node_Impl, public virtual DOM
 {
@@ -90,6 +108,16 @@ protected:
 //
 // [Template method pattern] ConcreteClass
 // - This implements the primitive operations to carry out subclass-specific steps of the algorithm.
+//
+// [Abstract Factory pattern] ConcreteProduct
+// - It defines a product object to be created by the corresponding ConcreteFactory.
+//
+// [Builder pattern] Product
+// - It represents the complex object under construction.
+// - ConcreteBuilder {MinimalNodeXMLBuilder, PrettyNodeXMLBuilder} build the product's internal representation,
+//   and define the process by which it's assembled.
+// - It includes classes that define the constituent parts,
+//   including interfaces for assembling the parts into the final result.
 //
 class PrettyDocument_Impl : public virtual Document_Impl
 {

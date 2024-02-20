@@ -42,6 +42,9 @@ namespace dom
 //   it performs some fixed actions, and calls the customizable primitive operations in a predefined order;
 //   it also calls serialize operation from other Node objects.
 //
+// [Abstract Factory pattern] AbstractProduct (Also ConcreteProduct here with the default implmentations)
+// - It defines an interface for a type of product object.
+//
 class Text_Impl : public virtual dom::Text, Node_Impl
 {
 protected:
@@ -85,6 +88,9 @@ public:
 //
 // [Template method pattern] ConcreteClass
 // - This implements the primitive operations to carry out subclass-specific steps of the algorithm.
+//
+// [Abstract Factory pattern] ConcreteProduct
+// - It defines a product object to be created by the corresponding ConcreteFactory.
 //
 class PrettyText_Impl : public virtual Text_Impl
 {

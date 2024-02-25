@@ -14,6 +14,11 @@ namespace dom
 	public:
 		virtual ~Text()	{}
 
+		//
+		// Serialization Data Extraction Strategy
+		//
+		virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace)	= 0;
+
 		virtual const std::string &	getName(void)							= 0;
 		virtual const std::string &	getData(void)							= 0;
 		virtual const std::string &	getValue(void)							= 0;
@@ -38,6 +43,11 @@ public:
 
 	virtual ~Text_Impl();
 
+	//
+	// Serialization Data Extraction Strategy
+	//
+	virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace);
+
 	virtual const std::string &	getName(void);
 	virtual const std::string &	getData(void);
 	virtual const std::string &	getValue(void);
@@ -50,6 +60,14 @@ public:
 	virtual void			deleteData(int offset, int count);
 	virtual void			replaceData(int offset, int count, const std::string & arg);
 	virtual dom::Text *		splitText(int offset);
+
+	//
+	// Overridden functions for conforming to Composite Leaf node behavior.
+	//
+	virtual Node *			insertBefore(Node * newChild, Node * refChild)	{ return 0; }
+	virtual Node *			replaceChild(Node * newChild, Node * oldChild)	{ return 0; }
+	virtual Node *			removeChild(Node * oldChild)			{ return 0; }
+	virtual Node *			appendChild(Node * newChild)			{ return 0; }
 };
 
 #endif // TEXT_H

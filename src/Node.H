@@ -41,6 +41,8 @@ namespace dom
 		virtual Node *			appendChild(Node * newChild)			= 0;
 		virtual bool			hasChildNodes(void)				= 0;
 		virtual const std::string &	getLocalName(void)				= 0;
+
+		virtual void setParent(dom::Node* parent) = 0;
 	};
 
 	class DOMException

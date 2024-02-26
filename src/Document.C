@@ -16,12 +16,15 @@ void Document_Impl::serialize(std::fstream * writer, WhitespaceStrategy * whites
 {
 	*writer << "<? xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	whitespace->newLine(writer);
-	getDocumentElement()->serialize(writer, whitespace);
+	dom::Element* element = getDocumentElement();
+	if (element != nullptr)
+		element->serialize(writer, whitespace);
 }
 
 dom::Element *	Document_Impl::createElement(const std::string & tagName)
 {
-	return new Element_Impl(tagName, this);
+	// return new Element_Impl(tagName, this);
+	return new ElementProxy(tagName, this);
 }
 
 dom::Text *	Document_Impl::createTextNode(const std::string & data)

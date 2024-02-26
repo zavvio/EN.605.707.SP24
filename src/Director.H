@@ -18,7 +18,10 @@ private:
 		END
 	};
 public:
+	XMLTokenizer tokenizer;
+	Builder* builder;
 	Director(const std::string & filename, Builder * builder);
+	void continueParsing();
 };
 
 #endif // DIRECTOR_H

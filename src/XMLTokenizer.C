@@ -118,6 +118,16 @@ XMLTokenizer::XMLToken *	XMLTokenizer::getNextToken(void)
 			return	token;
 		}
 
+		if (std::regex_search(line, what, prolog_end))
+		{
+			XMLToken* token = new XMLToken(std::string(what[0].first, what[0].second), XMLToken::PROLOG_END);
+			inside_tag = false;
+			tag_found = false;
+			pending_attribute_value = false;
+			update_matchers(what[0], what.suffix());
+			return	token;
+		}
+
 		if (std::regex_search(line, what, null_tag_end))
 		{
 			XMLToken *	token	= new XMLToken(std::string(what[0].first, what[0].second), XMLToken::NULL_TAG_END);
@@ -197,4 +207,17 @@ void		XMLTokenizer::update_matchers(const std::ssub_match & matcher, const std::
 
 	line	= suffix.str();
 	index	+= matcher.str().size();
+}
+
+XMLTokenizer::XMLTokenizerResumePoint XMLTokenizer::getResumePoint()
+{
+	XMLTokenizerResumePoint resumePoint;
+	resumePoint.line = line;
+	resumePoint.file_position = file.tellg();
+	// resumePoint.line_number = line_number;
+	// resumePoint.index = index;
+	// resumePoint.inside_tag = inside_tag;
+	// resumePoint.pending_attribute_value = pending_attribute_value;
+	// resumePoint.tag_found = tag_found;
+	return resumePoint;
 }

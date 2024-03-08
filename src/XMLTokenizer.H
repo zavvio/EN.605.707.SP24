@@ -46,16 +46,6 @@ private:
 
     virtual void		update_matchers(const std::ssub_match &, const std::ssub_match & suffix);
 public:
-    struct XMLTokenizerResumePoint
-    {
-        std::string line;
-        int file_position;
-        // int line_number;
-        // int index;
-        // bool inside_tag;
-        // bool pending_attribute_value;
-        // bool tag_found;
-    };
     class XMLToken
     {
     public:
@@ -93,15 +83,9 @@ public:
     virtual int		getLineNumber(void)	{ return line_number; }
     virtual int		getLineCharacter(void)	{ return index; }
     virtual XMLToken *	getNextToken(void);
-    virtual XMLTokenizerResumePoint getResumePoint();
     virtual std::streampos getFilePosition()
     {
         std::streampos pos = file.tellg();
-        //std::string line;
-        //std::getline(file, line);
-        //std::cout << line << std::endl;
-        //file.seekg(pos, file.beg);
-        //return file.tellg();
         return pos;
     }
     virtual void setFilePosition(std::streampos pos) { file.clear(); file.seekg(pos, file.beg); }

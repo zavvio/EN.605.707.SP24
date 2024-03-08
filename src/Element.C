@@ -232,7 +232,8 @@ dom::Node * ElementValidator::appendChild(dom::Node * newChild)
 
 ElementProxy::ElementProxy(const std::string& tagName, dom::Document* document) :
     Node_Impl(tagName, dom::Node::ELEMENT_NODE),
-    element(new Element_Impl(tagName, document)), isChildInitialized(false)
+    element(new Element_Impl(tagName, document)), isChildInitialized(false),
+    pDirector(nullptr)
 {
 }
 
@@ -289,7 +290,6 @@ dom::Node* ElementProxy::removeChild(Node* oldChild)
 
 dom::Node* ElementProxy::appendChild(Node* newChild)
 {
-    //if (!isChildInitialized) parseChildNodes();
     return element->appendChild(newChild);
 }
 

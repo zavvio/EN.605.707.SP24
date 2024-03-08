@@ -53,7 +53,6 @@ Director::Director(const std::string & filename, Builder * _builder) :
                 switch(currentToken)
                 {
                 case XMLTokenizer::XMLToken::ATTRIBUTE:
-                    //builder->createAttribute(token->getToken());
                     break;
                 case XMLTokenizer::XMLToken::PROLOG_END:
                     builder->endProlog();
@@ -67,7 +66,6 @@ Director::Director(const std::string & filename, Builder * _builder) :
                 switch(currentToken)
                 {
                 case XMLTokenizer::XMLToken::ATTRIBUTE_VALUE:
-                    //builder->valueAttribute(token->getToken());
                     break;
                 default:
                     break;
@@ -77,7 +75,6 @@ Director::Director(const std::string & filename, Builder * _builder) :
                 switch(currentToken)
                 {
                 case XMLTokenizer::XMLToken::ATTRIBUTE:
-                    //builder->createAttribute(token->getToken());
                     break;
                 case XMLTokenizer::XMLToken::PROLOG_END:
                     builder->endProlog();
@@ -98,7 +95,6 @@ Director::Director(const std::string & filename, Builder * _builder) :
                 switch(currentToken)
                 {
                 case XMLTokenizer::XMLToken::ELEMENT:
-                    // TODO: create ProxyElement
                     builder->createElement(token->getToken());
                     break;
                 default:
@@ -185,7 +181,6 @@ Director::Director(const std::string & filename, Builder * _builder) :
                 switch(currentToken)
                 {
                 case XMLTokenizer::XMLToken::TAG_END:
-                    //if (!builder->popElement())
                     documentLocation = END;
                     break;
                 default:
@@ -196,9 +191,7 @@ Director::Director(const std::string & filename, Builder * _builder) :
                 switch(currentToken)
                 {
                 case XMLTokenizer::XMLToken::TAG_START:
-                    //documentLocation	= PARSING_ELEMENT;
-
-                    // save from XMLTokenizer: line, index
+                    // Skip all children Nodes in the current depth
                     layerCount = 2;
                     while (layerCount > 0)
                     {
@@ -216,14 +209,11 @@ Director::Director(const std::string & filename, Builder * _builder) :
                             layerCount--;
                             break;
                         default:
-                            // printf("########## [ERROR] (%d) IN_NONNULL_ELEMENT -> TAG_END -> TAG_START -> %s\n", layerCount, token->getToken().c_str());
                             break;
                         }
                     }
-                    // Actually create element when we read tag name.
                     break;
                 case XMLTokenizer::XMLToken::VALUE:
-                    //builder->addValue(token->getToken());
                     break;
                 case XMLTokenizer::XMLToken::TAG_CLOSE_START:
                     break;
@@ -299,7 +289,6 @@ void Director::continueParsing()
                 switch (currentToken)
                 {
                 case XMLTokenizer::XMLToken::ELEMENT:
-                    // TODO: create ProxyElement
                     builder->createElement(token->getToken());
                     break;
                 default:
@@ -408,7 +397,6 @@ void Director::continueParsing()
                 switch (currentToken)
                 {
                 case XMLTokenizer::XMLToken::TAG_END:
-                    //if (!builder->popElement())
                     if (isInTagCloseStart)
                     {
                         documentLocation = PARSING_ELEMENT;
@@ -426,9 +414,7 @@ void Director::continueParsing()
                 switch (currentToken)
                 {
                 case XMLTokenizer::XMLToken::TAG_START:
-                    //documentLocation	= PARSING_ELEMENT;
-
-                    // save from XMLTokenizer: line, index
+                    // Skip all children Nodes in the current depth
                     layerCount = 2;
                     while (layerCount > 0)
                     {
@@ -446,14 +432,12 @@ void Director::continueParsing()
                             layerCount--;
                             break;
                         default:
-                            // printf("########## [ERROR] (%d) IN_NONNULL_ELEMENT -> TAG_END -> TAG_START -> %s\n", layerCount, token->getToken().c_str());
                             break;
                         }
                     }
                     // Actually create element when we read tag name.
                     break;
                 case XMLTokenizer::XMLToken::VALUE:
-                    //builder->addValue(token->getToken());
                     break;
                 case XMLTokenizer::XMLToken::TAG_CLOSE_START:
                     break;

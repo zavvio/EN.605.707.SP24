@@ -16,7 +16,6 @@ void testSerializer(int argc, char** argv);
 void testValidator(int argc, char** argv);
 void testIterator(int argc, char** argv);
 void testDirector(int argc, char** argv);
-void testZ(int argc, char** argv);
 
 void printUsage(void)
 {
@@ -57,10 +56,6 @@ int main(int argc, char** argv)
     case 'D':
     case 'd':
         testDirector(argc, argv);
-        break;
-    case 'Z':
-    case 'z':
-        testZ(argc, argv);
         break;
     }
 }
@@ -297,32 +292,4 @@ void testDirector(int argc, char** argv)
     std::fstream	file(argv[3], std::ios_base::out);
     XMLSerializer	xmlSerializer(&file);
     xmlSerializer.serializePretty(document);
-}
-
-void testZ(int argc, char** argv)
-{
-    std::fstream file(argv[2], std::ios_base::in);
-    std::string line;
-    int position;
-    printf("%X\n", (int)file.tellg());
-    std::getline(file, line);
-    printf("%s\n", line.c_str());
-    printf("%X\n", (int)file.tellg());
-    position = file.tellg();
-    std::getline(file, line);
-    printf("%s\n", line.c_str());
-    printf("%X\n", (int)file.tellg());
-    std::getline(file, line);
-    printf("%s\n", line.c_str());
-    printf("%X\n", (int)file.tellg());
-
-    file.seekg(position, file.beg);
-    std::getline(file, line);
-    printf("%s\n", line.c_str());
-    printf("%X\n", (int)file.tellg());
-
-    file.seekg(position, file.beg);
-    std::getline(file, line);
-    printf("%s\n", line.c_str());
-    printf("%X\n", (int)file.tellg());
 }

@@ -9,14 +9,17 @@
 #include "Director.H"
 #include "Builder.H"
 
-//class Director;
-
 namespace dom
 {
     class Attr;
     class NodeList;
     class Document;
 
+    //
+    // [Proxy pattern] Subject
+    // This Element (along with parent interface Node), defines the common interface for RealSubject (Element_Impl)
+    // and Proxy (ElementProxy) so that a Proxy can be used anywhere in place of RealSubject.
+    //
     class Element : public virtual Node
     {
     public:
@@ -42,6 +45,11 @@ namespace dom
     };
 };
 
+//
+// [Proxy pattern] RealSubject
+// This defines the real object that the (virtual) ElementProxy represents;
+// by itself, the RealSubject does not have the capability to keep track of the source to resume parsing its children Nodes.
+//
 class Element_Impl : public virtual dom::Element, Node_Impl
 {
 private:
@@ -72,7 +80,18 @@ public:
     virtual bool			hasAttributes(void)	{ return attributes.size() > 0; }
 };
 
-// This is a virtual proxy for Element to delay parsing of children elements
+//
+// [Proxy pattern] Proxy
+// - element maintains the reference for Proxy to access the RealSubject (Element_Impl),
+//   it's accessible since RealSubject and Subject (Element) and itself have the same interface.
+// - It can be used in place of the RealSubject one again because of the same interface.
+// - As a Virtual Proxy, it controls and postpones access to its children Nodes;
+//   Specifically, it keeps track of the file stream/pointer position to its source file where children info can be found;
+//   Only when a client (e.g. XMLSerializer) accesses its child node later on (e.g. serialize) would it
+//     resume parsing the source file further to construct the children Nodes;
+// - Although, ElementProxy doesn't create its child directly, it uses its reference to the Director,
+//     which in turn orchestrates a Builder that is adapted to construct relevant child Element from the same family, to do so.
+//
 class ElementProxy : public virtual dom::Element, Node_Impl
 {
 private:

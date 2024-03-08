@@ -13,6 +13,13 @@ namespace dom
 
 class Director;
 
+//
+// [Monostate pattern] Monostate
+// This class holds states/data {factory, currentElement, parentElement} which are unique throughout the application;
+// It provides access functions to them but all instances of the class share the same common copy of data internally;
+// Using Monostate instead of Singular pattern avoids required adjustments to client code to be aware of Singular Instance;
+// Note that only the Builder itself is Monostate, not the Document ("factory") being built, which can be swapped.
+//
 class Builder
 {
 private:

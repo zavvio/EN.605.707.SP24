@@ -1,0 +1,68 @@
+@startuml Proxy
+'skinparam linetype ortho
+'skinparam linetype polyline
+
+class Client.XMLSerializer {
+    +serializePretty(...)
+    +serializeMinimal(...)
+}
+
+class Subject.Element {
+    +serialize()
+    +getChildNodes()
+    +getFirstChild()
+    +getLastChild()
+    +insertBefore()
+    +replaceChild()
+    +removeChild()
+    +appendChild()
+    +hasChildNodes()
+    ...()
+}
+
+class RealSubject.Element_Impl {
+    +serialize()
+    +getChildNodes()
+    +getFirstChild()
+    +getLastChild()
+    +insertBefore()
+    +replaceChild()
+    +removeChild()
+    +appendChild()
+    +hasChildNodes()
+    ...()
+}
+
+class Proxy.ElementProxy {
+    -Element* element
+    -bool isChildInitialized
+    -std::streampos streamPosition
+    -Director* pDirector
+    +serialize()
+    +getChildNodes()
+    +getFirstChild()
+    +getLastChild()
+    +insertBefore()
+    +replaceChild()
+    +removeChild()
+    +appendChild()
+    +hasChildNodes()
+    ...()
+    +parseChildNodes()
+    +setIsChildInitialized()
+    +setElementInitPoint()
+    +setDirector()
+}
+
+Client.XMLSerializer .right.> Subject.Element
+Subject.Element <|-- RealSubject.Element_Impl
+Subject.Element <|-- Proxy.ElementProxy
+RealSubject.Element_Impl <-right- Proxy.ElementProxy
+
+note top of Client.XMLSerializer
+    Test uses XMLSerializer
+    to access Element
+    through Document
+end note
+
+@enduml

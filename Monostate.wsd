@@ -1,0 +1,25 @@
+@startuml Monostate
+'skinparam linetype ortho
+'skinparam linetype polyline
+
+class Monostate.Builder {
+    -static dom::Document* factory
+    -static dom::Element* currentElement
+    -static dom::Element* parentElement
+    -dom::Attr* currentAttr
+	+getDocument()
+    +setDocumentUnderConstruction(...)
+    +getParentElement()
+    +setParentElement(...)
+    ...()
+}
+
+note right of Monostate.Builder::factory
+    factory lasts for the application's lifetime;
+    parentElement lasts for a wave of children node parsing;
+    currentElement lasts for the duration of 1 element,
+      along with its attributes;
+    currentAttr is very short-lived, not important enough.
+end note
+
+@enduml

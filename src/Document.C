@@ -23,7 +23,6 @@ void Document_Impl::serialize(std::fstream * writer, WhitespaceStrategy * whites
 
 dom::Element *	Document_Impl::createElement(const std::string & tagName)
 {
-	// return new Element_Impl(tagName, this);
 	return new ElementProxy(tagName, this);
 }
 

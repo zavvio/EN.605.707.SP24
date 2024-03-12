@@ -1,0 +1,29 @@
+@startuml Class Adapter
+'skinparam linetype ortho
+'skinparam linetype polyline
+
+class Client {
+}
+
+class Target <<interface>> {
+    +Request()
+}
+
+class Adaptee <<implementation>> {
+    +SpecificRequest()
+}
+
+class Adapter {
+    +Request()
+}
+
+Client -right-> Target
+Target <|-- Adapter
+Adaptee <|-- Adapter
+
+
+note right of Adapter::Request
+    SpecificRequest()
+end note
+
+@enduml

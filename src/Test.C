@@ -10,12 +10,17 @@
 #include "XMLValidator.H"
 #include "Builder.H"
 #include "Director.H"
+#include "AdapterDOMNode.hpp"
+#include "AdapterDOMNodeList.hpp"
+#include "AdapterDOMDocument.hpp"
+#include "AdapterDOMElement.hpp"
 
 void testTokenizer(int argc, char** argv);
 void testSerializer(int argc, char** argv);
 void testValidator(int argc, char** argv);
 void testIterator(int argc, char** argv);
 void testDirector(int argc, char** argv);
+void testAdapter(int argc, char** argv);
 
 void printUsage(void)
 {
@@ -25,6 +30,7 @@ void printUsage(void)
 	printf("\tTest v [file]\n");
 	printf("\tTest i\n");
 	printf("\tTest d [file1] [file2]\n");
+	printf("\tTest a [file1]\n");
 }
 
 int main(int argc, char** argv)
@@ -56,6 +62,10 @@ int main(int argc, char** argv)
 	case 'D':
 	case 'd':
 		testDirector(argc, argv);
+		break;
+	case 'A':
+	case 'a':
+		testAdapter(argc, argv);
 		break;
 	}
 }
@@ -292,4 +302,74 @@ void testDirector(int argc, char** argv)
 	std::fstream	file(argv[3], std::ios_base::out);
 	XMLSerializer	xmlSerializer(&file);
 	xmlSerializer.serializePretty(document);
+}
+
+//
+// [Adapater Pattern] Client
+// - This collaborates with objects conforming to the Target interface {XERCES::DOMDocument, XERCES::DOMElement, XERCES::DOMAttr, XERCES::DOMText}.
+//
+void testAdapter(int argc, char** argv)
+{
+	if (argc < 3)
+	{
+		printUsage();
+		exit(0);
+	}
+
+	XERCES::DOMDocument* document = new AdapterDOMDocument;
+	printf("document->getNodeName(): %s\n", document->getNodeName());
+	printf("document->getNodeValue(): %s\n", document->getNodeValue());
+	document->setNodeValue("document value");
+	printf("document->getNodeValue(): %s\n", document->getNodeValue());
+	printf("document->getNodeType() = %d\n", document->getNodeType());
+	
+	XERCES::DOMElement* root = document->createElement("document");
+	root->setNodeValue("element_document value");
+	printf("root->getNodeType() = %d\n", root->getNodeType());
+	document->appendChild(root);
+	//printf("root->getParentNode() = %p\n", root->getParentNode());
+	printf("root->getParentNode()->getNodeValue() = %s\n", root->getParentNode()->getNodeValue());
+
+	XERCES::DOMElement* child = document->createElement("element1");
+	child->setNodeValue("element_element1 value");
+	XERCES::DOMAttr* attr = document->createAttribute("attribute");
+	printf("attr->getNodeType() = %d\n", attr->getNodeType());
+	//attr->setNodeValue("attribute value");
+	XERCES::DOMText* text = document->createTextNode("Text Value");
+	printf("text->getNodeType() = %d\n", text->getNodeType());
+	child->appendChild(text);
+	printf("text->getParentNode()->getNodeValue() = %s\n", text->getParentNode()->getNodeValue());
+	document->appendChild(child);
+	printf("child->getParentNode()->getNodeValue() = %s\n", child->getParentNode()->getNodeValue());
+	
+	printf("\n\ndocument->hasChildNodes() = %s\n", document->hasChildNodes() ? "true" : "false");
+	printf("getChildNodes()->displayNodes():\n    ");
+	document->getChildNodes()->displayNodes();
+	printf("document->getFirstChild()->getNodeValue() = %s\n", document->getFirstChild()->getNodeValue());
+	printf("document->getLastChild()->getNodeValue() = %s\n", document->getLastChild()->getNodeValue());
+
+	XERCES::DOMElement* child2 = document->createElement("element2");
+	child2->setNodeValue("element_element2 value");
+	XERCES::DOMElement* child3 = document->createElement("element3");
+	child3->setNodeValue("element_element3 value");
+	XERCES::DOMElement* child4 = document->createElement("element4");
+	child4->setNodeValue("element_element4 value");
+
+	printf("appendChild(child3):\n    ");
+	document->appendChild(child3);
+	document->getChildNodes()->displayNodes();
+
+	printf("insertBefore(child2, child):\n    ");
+	document->insertBefore(child2, child);
+	document->getChildNodes()->displayNodes();
+
+	printf("replaceChild(child4, child):\n    ");
+	document->replaceChild(child4, child);
+	document->getChildNodes()->displayNodes();
+
+	printf("removeChild(child2):\n    ");
+	document->removeChild(child2);
+	document->getChildNodes()->displayNodes();
+
+	printf("Completed.\n");
 }

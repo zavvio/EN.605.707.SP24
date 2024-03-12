@@ -31,4 +31,18 @@ target_sources(Patterns PUBLIC
 	ValidChildren.C
 	ValidChildren.H
 	WhitespaceStrategy.H
+	xerces/DOMDocument.hpp
+	xerces/DOMNode.hpp
+	xerces/DOMNodeList.hpp
+	xerces/DOMElement.hpp
+	xerces/DOMAttr.hpp
+	xerces/DOMText.hpp
+	AdapterDOMDocument.cpp
+	AdapterDOMDocument.hpp
+	AdapterDOMNode.cpp
+	AdapterDOMNode.hpp
+	AdapterDOMNodeList.hpp
+	AdapterDOMElement.hpp
+	AdapterDOMAttr.hpp
+	AdapterDOMText.hpp
 	)

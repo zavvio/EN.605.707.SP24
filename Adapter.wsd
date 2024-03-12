@@ -1,0 +1,86 @@
+@startuml Adapter
+'skinparam linetype ortho
+skinparam linetype polyline
+
+class Client.Test {
+}
+
+class Target.xerces.DOMNode <<interface>> {
+}
+
+class Target.xerces.DOMDocument <<interface>> {
+}
+
+class Target.xerces.DOMElement <<interface>> {
+}
+
+class Target.xerces.DOMAttr <<interface>> {
+}
+
+class Target.xerces.DOMText <<interface>> {
+}
+
+class Adapter.AdapterDOMNode {
+    -dom::Node* node
+}
+
+class Adapter.AdapterDOMDocument {
+    -dom::Document* node
+}
+
+class Adapter.AdapterDOMElement {
+    -dom::Element* node
+}
+
+class Adapter.AdapterDOMAttr {
+    -dom::Attr* node
+}
+
+class Adapter.AdapterDOMText {
+    -dom::Text* node
+}
+
+class Adaptee.dom.Node <<implementation>> {
+}
+
+class Adaptee.dom.Document <<implementation>> {
+}
+
+class Adaptee.dom.Element <<implementation>> {
+}
+
+class Adaptee.dom.Attr <<implementation>> {
+}
+
+class Adaptee.dom.Text <<implementation>> {
+}
+
+Client.Test -right-> Target.xerces.DOMDocument
+Client.Test -right-> Target.xerces.DOMElement
+Client.Test -right-> Target.xerces.DOMAttr
+Client.Test -right-> Target.xerces.DOMText
+Target.xerces.DOMNode <|-- Target.xerces.DOMDocument
+Target.xerces.DOMNode <|-- Target.xerces.DOMElement
+Target.xerces.DOMNode <|-- Target.xerces.DOMAttr
+Target.xerces.DOMNode <|-- Target.xerces.DOMText
+Target.xerces.DOMNode <|-- Adapter.AdapterDOMNode
+Target.xerces.DOMDocument <|-- Adapter.AdapterDOMDocument
+Target.xerces.DOMElement <|-- Adapter.AdapterDOMElement
+Target.xerces.DOMAttr <|-- Adapter.AdapterDOMAttr
+Target.xerces.DOMText <|-- Adapter.AdapterDOMText
+Adapter.AdapterDOMNode <|-- Adapter.AdapterDOMDocument
+Adapter.AdapterDOMNode <|-- Adapter.AdapterDOMElement
+Adapter.AdapterDOMNode <|-- Adapter.AdapterDOMAttr
+Adapter.AdapterDOMNode <|-- Adapter.AdapterDOMText
+Adapter.AdapterDOMNode o--> Adaptee.dom.Node
+Adapter.AdapterDOMDocument o--> Adaptee.dom.Document
+Adapter.AdapterDOMElement o--> Adaptee.dom.Element
+Adapter.AdapterDOMAttr o--> Adaptee.dom.Attr
+Adapter.AdapterDOMText o--> Adaptee.dom.Text
+
+
+/'note right of Adapter::Request
+    adaptee->SpecificRequest()
+end note'/
+
+@enduml

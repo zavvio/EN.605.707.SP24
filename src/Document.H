@@ -23,6 +23,16 @@ namespace dom
 		virtual ~Iterator() {}
 	};
 
+	//
+	// [Adapter Pattern] Adaptee
+	// - This defines an existing interface that needs adapting.
+	// - There are five independent Adapter implementations here:
+	//      - XERCES::DOMNode       <- AdapterDOMNode       -> dom::Node
+	//      - XERCES::DOMDocument   <- AdapterDOMDocument   -> dom::Document
+	//      - XERCES::DOMElement    <- AdapterDOMElement    -> dom::Element
+	//      - XERCES::DOMAttr       <- AdapterDOMAttr       -> dom::Attr
+	//      - XERCES::DOMText       <- AdapterDOMText       -> dom::Text
+	//
 	class Document : public virtual Node
 	{
 	public:

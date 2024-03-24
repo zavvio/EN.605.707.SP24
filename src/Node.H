@@ -3,6 +3,7 @@
 
 #include <string>
 #include "NodeList.H"
+#include "WhitespaceStrategy.H"
 
 namespace dom
 {
@@ -17,6 +18,11 @@ namespace dom
 		static const short		TEXT_NODE	= 3;
 
 		virtual ~Node() {}
+
+		//
+		// Serialization Data Extraction Strategy
+		//
+		virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace)		= 0;
 
 		virtual const std::string &	getNodeName(void)				= 0;
 		virtual const std::string &	getNodeValue(void)				= 0;
@@ -57,6 +63,7 @@ namespace dom
 		static const int	NO_MODIFICATION_ALLOWED_ERR	= 4;
 		static const int	INVALID_CHARACTER_ERR		= 5;
 		static const int	HIERARCHY_REQUEST_ERR		= 6;
+		static const int	VALIDATION_ERR			= 7;
 	};
 };
 
@@ -73,9 +80,14 @@ private:
 protected:
 	dom::Document *	document;
 
-	Node_Impl(const std::string & name, short type);
 public:
+	Node_Impl(const std::string & name, short type);
 	virtual ~Node_Impl();
+
+	//
+	// Serialization Data Extraction Strategy
+	//
+	virtual void serialize(std::fstream * writer, WhitespaceStrategy * whitespace)	{}
 
 	virtual const std::string &	getNodeName(void);
 	virtual const std::string &	getNodeValue(void);

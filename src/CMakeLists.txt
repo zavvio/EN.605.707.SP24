@@ -1,11 +1,18 @@
 cmake_minimum_required (VERSION 3.23)
 project (Patterns)
 
+include_directories(xerces)
 add_executable(Patterns Test.C)
 set_property(TARGET Patterns PROPERTY CXX_STANDARD 20)
 target_sources(Patterns PUBLIC
+	Adapter.C
+	Adapter.H
 	Attr.C
 	Attr.H
+	Builder.C
+	Builder.H
+	Director.C
+	Director.H
 	Document.C
 	Document.H
 	Element.C
@@ -24,4 +31,7 @@ target_sources(Patterns PUBLIC
 	XMLTokenizer.H
 	XMLValidator.C
 	XMLValidator.H
+	ValidChildren.C
+	ValidChildren.H
+	WhitespaceStrategy.H
 	)

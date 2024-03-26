@@ -4,15 +4,8 @@
 #include <ios>
 #include <stack>
 #include "Document.H"
+#include "Observer.H"
 
-// 
-// [Abstract Factory pattern] AbstractFactory
-// - It declares an interface for Build operations that create abstract Node product objects
-//   {Document_Impl, Element_Impl, Attr_Impl, Text_Impl}.
-//
-// [Builder pattern] Builder
-// - It specifies an abstract interface for creating parts {Node types} of a Product {DOM} object.
-//
 class XMLBuilder
 {
 protected:
@@ -26,23 +19,24 @@ public:
     virtual void popProbe() {}
 };
 
-// 
-// [Abstract Factory pattern] (partial) ConcreteFactory
-// - It implements the Build operations to create concrete Node product objects.
-// - In this scenario, there are actually two true ConcreteFactory subclasses {MinimalNodeXMLBuilder, PrettyNodeXMLBuilder}.
 //
-// [Builder pattern] (partial) ConcreteBuilder
-// - It constructs and assembles parts {Node types} of the product by implementing the Builder interface {XMLBuilder}.
-// - It keeps track of the object representation / hierarchy.
-// - It provide an interface to retrieve the final product {DOM}.
-// - {MinimalNodeXMLBuilder, PrettyNodeXMLBuilder} are the two true ConcreteBuilder,
-//   which creates Node objects from the "minimal" or "pretty" families respectively.
+// [Observer pattern] ConcreteSubject
+// - This is subclass of the Subject, so it's already capable of attaching/detaching Observer objects.
+// - This store state of interest to ConcreteObserver objects {TitleBar, TabBar, Canvas, StatusBar}
+// - It sends a notification to its observers when its state change; which is when it parses a new XML file.
+// - Note: This is also the Builder from the Builder pattern
 //
-class NodeXMLBuilder : public virtual XMLBuilder
+// [Mediator pattern] Colleague classes
+// - The Mediator object keeps track of these Colleague classes.
+// - The colleagues communicate with the Mediator whenever it would have otherwise communicated with another colleague.
+// - The colleagues are both the Subject and Observer objects from the Observer pattern.
+//
+class NodeXMLBuilder : public virtual XMLBuilder, public virtual Subject
 {
 protected:
     Document_Impl* _currentDOM;
     std::stack<dom::Element*> hierarchyProbe;
+	std::string _state;
 public:
     NodeXMLBuilder();
     virtual void BuildDocument() = 0;
@@ -51,42 +45,39 @@ public:
     virtual void BuildText(const std::string& data);
     virtual DOM* GetDOM() { return _currentDOM; }
     virtual void popProbe();
+    virtual std::string getState() { return ""; };
 };
 
-// 
-// [Abstract Factory pattern] ConcreteFactory
-// - It implements the Build operations to create concrete Node product objects.
-// - Specialized to create ConcreteProduct of {Document_Impl, Element_Impl, Attr_Impl, Text_Impl}.
 //
-// [Builder pattern] ConcreteBuilder
-// - It constructs and assembles parts {Node types} of the product by implementing the Builder interface {XMLBuilder}.
-// - It keeps track of the object representation / hierarchy.
-// - It provide an interface to retrieve the final product {DOM}.
-// - {MinimalNodeXMLBuilder} is a true ConcreteBuilder which creates Node objects from the "minimal" family.
-//   {Document_Impl, Element_Impl, Attr_Impl, Text_Impl}
+// [Observer pattern] ConcreteSubject
+// - subclass of (ConcreteSubject) NodeXMLBuilder
+//
+// [Mediator pattern] Colleague classes
+// - The Mediator object keeps track of these Colleague classes.
+// - The colleagues communicate with the Mediator whenever it would have otherwise communicated with another colleague.
+// - The colleagues are both the Subject and Observer objects from the Observer pattern.
 //
 class MinimalNodeXMLBuilder : public virtual NodeXMLBuilder
 {
 public:
-    MinimalNodeXMLBuilder() {}
+    MinimalNodeXMLBuilder(ChangeManager* changeManager = nullptr) : Subject(changeManager) {}
     virtual void BuildDocument();
+	virtual std::string getState();
 };
 
-// 
-// [Abstract Factory pattern] ConcreteFactory
-// - It implements the Build operations to create concrete Node product objects.
-// - Specialized to create ConcreteProduct of {PrettyDocument_Impl, PrettyElement_Impl, PrettyAttr_Impl, PrettyText_Impl}.
 //
-// [Builder pattern] ConcreteBuilder
-// - It constructs and assembles parts {Node types} of the product by implementing the Builder interface {XMLBuilder}.
-// - It keeps track of the object representation / hierarchy.
-// - It provide an interface to retrieve the final product {DOM}.
-// - {PrettyNodeXMLBuilder} is a true ConcreteBuilder which creates Node objects from the "pretty" family.
-//   {PrettyDocument_Impl, PrettyElement_Impl, PrettyAttr_Impl, PrettyText_Impl}
+// [Observer pattern] ConcreteSubject
+// - subclass of (ConcreteSubject) NodeXMLBuilder
+//
+// [Mediator pattern] Colleague classes
+// - The Mediator object keeps track of these Colleague classes.
+// - The colleagues communicate with the Mediator whenever it would have otherwise communicated with another colleague.
+// - The colleagues are both the Subject and Observer objects from the Observer pattern.
 //
 class PrettyNodeXMLBuilder : public virtual NodeXMLBuilder
 {
 public:
-    PrettyNodeXMLBuilder() {}
+    PrettyNodeXMLBuilder(ChangeManager* changeManager = nullptr) : Subject(changeManager) {}
     virtual void BuildDocument();
+	virtual std::string getState();
 };

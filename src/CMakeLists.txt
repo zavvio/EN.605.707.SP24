@@ -14,6 +14,8 @@ target_sources(Patterns PUBLIC
 	NamedNodeMap.H
 	Node.C
 	Node.H
+	Observer.C
+	Observer.H
 	NodeList.H
 	Test.C
 	Text.C

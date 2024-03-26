@@ -1,0 +1,91 @@
+@startuml Observer
+skinparam linetype ortho
+'skinparam linetype polyline
+
+class Subject_Colleague.Subject {
+    -ChangeManager* _changeManager;
+    +attach(Observer* observer)
+    +detach(Observer* observer)
+    +notify（）
+    +getState()
+}
+
+class ConcreteSubject_ConcreteColleague.XMLTokenizer <Director> {
+    +initialize(...)
+    +construct(...)
+    +getState()
+}
+
+class ConcreteSubject_ConcreteColleague.NodeXMLBuilder {
+    #<<factory>> Document_Impl* _currentDOM
+    +BuildDocument()
+    +BuildElement(string)
+    +BuildAttribute(string, string)
+    +BuildText(string)
+    +GetDOM()
+    +popProbe()
+    +getState()
+}
+
+class ConcreteSubject_ConcreteColleague.MinimalNodeXMLBuilder {
+    +BuildDocument()
+    +getState()
+}
+
+class ConcreteSubject_ConcreteColleague.PrettyNodeXMLBuilder {
+    +BuildDocument()
+    +getState()
+}
+
+class Mediator.ChangeManager {
+    -set<pair<Subject*, Observer*>> _mappings;
+    +Register(Subject, Observer)
+    +Unregister(Subject, Observer)
+    +Notify()
+    +Notify(Subject)
+}
+
+class ConcreteMediator.SimpleChangeManager {
+}
+
+class Observer_Colleague.Observer {
+    +update(subject)
+}
+
+class ConcreteObserver_ConcreteColleague.TitleBar {
+    +update(subject)
+}
+
+class ConcreteObserver_ConcreteColleague.TabBar {
+    +update(subject)
+}
+
+class ConcreteObserver_ConcreteColleague.Canvas {
+    +update(subject)
+}
+
+class ConcreteObserver_ConcreteColleague.StatusBar {
+    +update(subject)
+}
+
+Subject_Colleague.Subject <|-down- ConcreteSubject_ConcreteColleague.XMLTokenizer
+Subject_Colleague.Subject <|-down- ConcreteSubject_ConcreteColleague.NodeXMLBuilder
+ConcreteSubject_ConcreteColleague.XMLTokenizer o-right-> ConcreteSubject_ConcreteColleague.NodeXMLBuilder
+ConcreteSubject_ConcreteColleague.NodeXMLBuilder <|-down- ConcreteSubject_ConcreteColleague.MinimalNodeXMLBuilder
+ConcreteSubject_ConcreteColleague.NodeXMLBuilder <|-down- ConcreteSubject_ConcreteColleague.PrettyNodeXMLBuilder
+Subject_Colleague.Subject <-right- Mediator.ChangeManager
+Subject_Colleague.Subject --> Mediator.ChangeManager
+Mediator.ChangeManager <|-down- ConcreteMediator.SimpleChangeManager
+Observer_Colleague.Observer <|-down- ConcreteObserver_ConcreteColleague.TitleBar
+Observer_Colleague.Observer <|-down- ConcreteObserver_ConcreteColleague.TabBar
+Observer_Colleague.Observer <|-down- ConcreteObserver_ConcreteColleague.Canvas
+Observer_Colleague.Observer <|-down- ConcreteObserver_ConcreteColleague.StatusBar
+
+ConcreteSubject_ConcreteColleague.XMLTokenizer <-right- ConcreteObserver_ConcreteColleague.TitleBar
+ConcreteSubject_ConcreteColleague.XMLTokenizer <-right- ConcreteObserver_ConcreteColleague.TabBar
+ConcreteSubject_ConcreteColleague.NodeXMLBuilder <-right- ConcreteObserver_ConcreteColleague.Canvas
+ConcreteSubject_ConcreteColleague.NodeXMLBuilder <-right- ConcreteObserver_ConcreteColleague.StatusBar
+
+Mediator.ChangeManager -right-> Observer_Colleague.Observer
+
+@enduml

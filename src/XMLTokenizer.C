@@ -63,8 +63,9 @@ const char *	XMLTokenizer::XMLToken::toString(void)
     }
 }
 
-XMLTokenizer::XMLTokenizer(const std::string & filename) :
-  file(filename.c_str(), std::ios_base::in),
+XMLTokenizer::XMLTokenizer(ChangeManager* changeManager) :
+  Subject(changeManager),
+  //file(filename.c_str(), std::ios_base::in),
   line_number(0),
   index(0),
   inside_tag(false),
@@ -139,6 +140,16 @@ XMLTokenizer::XMLToken *	XMLTokenizer::getNextToken(void)
             inside_tag		= false;
             pending_attribute_value	= false;
             tag_found		= false;
+            update_matchers(what[0], what.suffix());
+            return	token;
+        }
+
+        if (std::regex_search(line, what, prolog_end))
+        {
+            XMLToken* token = new XMLToken(std::string(what[0].first, what[0].second), XMLToken::PROLOG_END);
+            inside_tag = false;
+            pending_attribute_value = false;
+            tag_found = false;
             update_matchers(what[0], what.suffix());
             return	token;
         }
@@ -237,6 +248,13 @@ void XMLTokenizer::rewind()
     tag_found = false;
 }
 
+void XMLTokenizer::initialize(const std::string& filename)
+{
+    file = std::fstream(filename.c_str(), std::ios_base::in);
+    _state = filename;
+    this->notify();
+}
+
 DOM* XMLTokenizer::construct(XMLBuilder* builder)
 {
     rewind();
@@ -249,8 +267,8 @@ DOM* XMLTokenizer::construct(XMLBuilder* builder)
         delete	token;
         token = getNextToken();
 
-        printf("\tLine %d:  %s = '%s'\n", getLineNumber(),
-            token->toString(), token->getToken().size() == 0 ? "" : token->getToken().c_str());
+        //printf("\tLine %d:  %s = '%s'\n", getLineNumber(),
+        //    token->toString(), token->getToken().size() == 0 ? "" : token->getToken().c_str());
 
         switch (token->getTokenType())
         {
@@ -266,7 +284,7 @@ DOM* XMLTokenizer::construct(XMLBuilder* builder)
             break;
         case XMLTokenizer::XMLToken::ATTRIBUTE:
             tokenString = token->getCleanToken();
-            printf("%s\n", tokenString.c_str());
+            //printf("%s\n", tokenString.c_str());
             break;
         case XMLTokenizer::XMLToken::ATTRIBUTE_VALUE:
             //tokenString = token->getCleanToken();
@@ -280,12 +298,12 @@ DOM* XMLTokenizer::construct(XMLBuilder* builder)
                 break;
             }
             tokenString = token->getCleanToken();
-            printf("%s\n", tokenString.c_str());
+            //printf("%s\n", tokenString.c_str());
             builder->BuildElement(tokenString);
             break;
         case XMLTokenizer::XMLToken::VALUE:
             tokenString = token->getCleanToken();
-            printf("%s\n", tokenString.c_str());
+            //printf("%s\n", tokenString.c_str());
             builder->BuildText(tokenString);
             break;
         default:
@@ -298,3 +316,8 @@ DOM* XMLTokenizer::construct(XMLBuilder* builder)
 
     return builder->GetDOM();
 }
+
+std::string XMLTokenizer::getState()
+{
+	return _state;
+};

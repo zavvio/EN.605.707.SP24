@@ -3,12 +3,26 @@
 #include <ios>
 #include <regex>
 #include "XMLBuilder.H"
+#include "Observer.H"
 
 class DOM;
 
-class XMLTokenizer
+//
+// [Observer pattern] ConcreteSubject
+// - This is subclass of the Subject, so it's already capable of attaching/detaching Observer objects.
+// - This store state of interest to ConcreteObserver objects {TitleBar, TabBar, Canvas, StatusBar}
+// - It sends a notification to its observers when its state change; which is when it parses a new XML file.
+// - Note: This is also the Director from the Builder pattern
+//
+// [Mediator pattern] Colleague classes
+// - The Mediator object keeps track of these Colleague classes.
+// - The colleagues communicate with the Mediator whenever it would have otherwise communicated with another colleague.
+// - The colleagues are both the Subject and Observer objects from the Observer pattern.
+//
+class XMLTokenizer : public Subject
 {
 private:
+	std::string _state;
     std::fstream		file;
     std::string		line;
     int			line_number;
@@ -78,21 +92,14 @@ public:
         virtual const char *		toString(void);
     };
 
-    XMLTokenizer(const std::string & filename);
+    XMLTokenizer(ChangeManager* changeManager = nullptr);
     ~XMLTokenizer() {}
 
     virtual int		getLineNumber(void)	{ return line_number; }
     virtual int		getLineCharacter(void)	{ return index; }
     virtual XMLToken *	getNextToken(void);
 
-    // 
-    // [Abstract Factory pattern] Client
-    // - It uses only the interface (Build functions) declared by AbstractFactory {XMLBuilder} class,
-    //   which builds Node objects from the same (implementation) family.
-    //
-    //
-    // [Builder pattern] Director
-    // - It constructs an object using the Builder's {XMLBuild} interface.
-    //
     virtual DOM* construct(XMLBuilder* builder);
+    virtual void initialize(const std::string& filename);
+	virtual std::string getState();
 };

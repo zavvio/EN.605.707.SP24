@@ -15,6 +15,7 @@ void testSerializer(int argc, char** argv);
 void testValidator(int argc, char** argv);
 void testIterator(int argc, char** argv);
 void testBuilder(int argc, char** argv);
+void testMediator(int argc, char** argv);
 
 void printUsage(void)
 {
@@ -24,6 +25,7 @@ void printUsage(void)
     printf("\tTest v [file]\n");
     printf("\tTest i [file]\n");
     printf("\tTest b [input file] [output file 1] [output file 2]\n");
+    printf("\tTest m [file1]\n");
 }
 
 int main(int argc, char** argv)
@@ -56,24 +58,11 @@ int main(int argc, char** argv)
     case 'b':
         testBuilder(argc, argv);
         break;
+    case 'M':
+    case 'm':
+        testMediator(argc, argv);
+        break;
     }
-}
-
-void testBuilder(int argc, char** argv)
-{
-    XMLTokenizer tokenizer(argv[2]);
-
-    PrettyNodeXMLBuilder prettyBuilder;
-    DOM* dom = tokenizer.construct(&prettyBuilder);
-    std::fstream* file = new std::fstream(argv[3], std::ios_base::out);
-    if (dom != nullptr) dom->serializeDOM(file, 0);
-    delete file;
-
-    MinimalNodeXMLBuilder minimalBuilder;
-    dom = tokenizer.construct(&minimalBuilder);
-    file = new std::fstream(argv[4], std::ios_base::out);
-    if (dom != nullptr) dom->serializeDOM(file, 0);
-    delete file;
 }
 
 void testTokenizer(int argc, char** argv)
@@ -98,7 +87,8 @@ void testTokenizer(int argc, char** argv)
 
     for (int i = 2; i < argc; i++)
     {
-        XMLTokenizer	tokenizer(argv[i]);
+        XMLTokenizer	tokenizer;
+        tokenizer.initialize(argv[i]);
 
         XMLTokenizer::XMLToken *	token	= 0;
 
@@ -331,4 +321,41 @@ void testIterator(int argc, char** argv)
     delete domIterator;
 
     // delete Document and tree.
+}
+
+void testBuilder(int argc, char** argv)
+{
+    XMLTokenizer tokenizer;
+    tokenizer.initialize(argv[2]);
+
+    PrettyNodeXMLBuilder prettyBuilder;
+    DOM* dom = tokenizer.construct(&prettyBuilder);
+    std::fstream* file = new std::fstream(argv[3], std::ios_base::out);
+    if (dom != nullptr) dom->serializeDOM(file, 0);
+    delete file;
+
+    MinimalNodeXMLBuilder minimalBuilder;
+    dom = tokenizer.construct(&minimalBuilder);
+    file = new std::fstream(argv[4], std::ios_base::out);
+    if (dom != nullptr) dom->serializeDOM(file, 0);
+    delete file;
+}
+
+void testMediator(int argc, char** argv)
+{
+    SimpleChangeManager changeManager;                  // ConcreteMediator: ChangeManager
+    PrettyNodeXMLBuilder prettyBuilder(&changeManager); // ConcreteSubject: Builder
+    XMLTokenizer tokenizer(&changeManager);             // ConcreteSubject: Director
+
+    TitleBar titleBar;                                  // ConcreteObserver
+    TabBar tabBar;                                      // ConcreteObserver
+    tokenizer.attach(&titleBar);
+    tokenizer.attach(&tabBar);
+    Canvas canvas;                                      // ConcreteObserver
+    StatusBar statusBar;                                // ConcreteObserver
+    prettyBuilder.attach(&canvas);
+    prettyBuilder.attach(&statusBar);
+
+    tokenizer.initialize(argv[2]);
+    DOM* dom = tokenizer.construct(&prettyBuilder);
 }
